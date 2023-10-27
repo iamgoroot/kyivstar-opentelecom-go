@@ -9,6 +9,9 @@ To install the Kyivstar API client, use the `go get` command:
 ```bash
 go get github.com/iamgoroot/kyivstar-opentelecom-go
 ```
+## Before you start
+
+In order to use the API, you need to register at https://api-market.kyivstar.ua and obtain client_id and client_secret.
 
 ## Usage
 
