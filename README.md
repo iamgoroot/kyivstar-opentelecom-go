@@ -1,6 +1,6 @@
 # Kyivstar Open Telecom API Client for Go
 
-This is unofficial a Go client for the Kyivstar API, which allows you to interact with the Kyivstar Open Telecom API.
+This is unofficial a Go client for the Kyivstar API, which allows you to interact with the Kyivstar Open Telecom API https://api-gateway.kyivstar.ua
 
 ## Installation
 
