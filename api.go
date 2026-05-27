@@ -1,19 +1,19 @@
-package client
+package ksopentelecom
 
-type Client interface {
-	Sms
-	VerifySim
-	Scoring
+import (
+	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/sms"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
+)
+
+type (
+	SMS = sms.Service
+)
+type V1Client struct {
+	SMS
 }
 
-type Sms interface {
-	Send(req SmsSendReq) (SmsSendResp, error)
-	Check(msgID string) (SmsCheckResp, error)
-}
-type VerifySim interface {
-	VerifySim(phoneNumber string, params VerifySimReq) (VerifySimResp, error)
-}
-
-type Scoring interface {
-	Scoring(phoneNumber string, modelId int) (ScoringResp, error)
+func createV1Client(ksClient client.Client) (V1Client, error) {
+	return V1Client{
+		SMS: sms.NewService(ksClient),
+	}, nil
 }

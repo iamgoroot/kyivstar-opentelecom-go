@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
+
 	ksOpen "github.com/iamgoroot/kyivstar-opentelecom-go"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/sms"
 )
 
 func main() {
@@ -13,29 +15,32 @@ func main() {
 		ClientID:     "your_client_id",
 		ClientSecret: "your_client_secret",
 	}
+
 	ctx := context.Background()
-	ksClient := ksOpen.New(ctx, conf)
+
+	ksClient, err := ksOpen.NewV1Client(ctx, conf)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	const destinationPhoneNumber = "380670000200"
-	//Send msg
+
+	// Send msg
 	sendMsgResp, err := ksClient.Send(
-		ksOpen.SmsSendReq{
+		ctx,
+		sms.SendReq{
 			From: "messagedesk",
 			To:   destinationPhoneNumber,
 			Text: "Hello World!",
-		})
-	fmt.Println("Sent", sendMsgResp, err)
+		},
+	)
+	log.Println("Sent", sendMsgResp, err)
 
 	// Check Status
-	check, err := ksClient.Check(sendMsgResp.MsgId)
-	fmt.Println("Check", check.Status, err)
+	check, err := ksClient.Check(ctx, sendMsgResp.MsgID)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// Scoring
-	scoring, err := ksClient.Scoring(destinationPhoneNumber, 0)
-	fmt.Println("Scored:", scoring, err)
-
-	//Verify sim
-	sim, err := ksClient.VerifySim(destinationPhoneNumber, ksOpen.VerifySimReq{
-		ActivationHours: 48,
-	})
-	fmt.Printf("Verify sim: changed=%d, active=%d, err=%v", sim.SimChanged, sim.IsActive, err)
+	log.Println("Check", check.Status, err)
 }

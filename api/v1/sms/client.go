@@ -1,0 +1,25 @@
+package sms
+
+import (
+	"context"
+	"path"
+
+	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
+)
+
+const endpointContextPath = "v1/sms"
+
+type service struct {
+	client client.Client
+}
+
+// Send Відправка SMS
+func (s service) Send(ctx context.Context, req SendReq) (SendResp, error) {
+	return client.Post[SendReq, SendResp](ctx, s.client, endpointContextPath, nil, req)
+}
+
+// Check Перевірка статусу SMS
+func (s service) Check(ctx context.Context, msgID string) (resp CheckResp, err error) {
+	endpointPath := path.Join(endpointContextPath, msgID)
+	return client.Get[CheckResp](ctx, s.client, endpointPath, nil)
+}
