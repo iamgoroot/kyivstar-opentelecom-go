@@ -25,8 +25,8 @@ func main() {
 
 	const destinationPhoneNumber = "380670000200"
 
-	// Send msg
-	sendMsgResp, err := ksClient.Send(
+	// Send SMS
+	sendMsgResp, err := ksClient.SMS.Send(
 		ctx,
 		sms.SendReq{
 			From: "messagedesk",
@@ -36,8 +36,8 @@ func main() {
 	)
 	log.Println("Sent", sendMsgResp, err)
 
-	// Check Status
-	check, err := ksClient.Check(ctx, sendMsgResp.MsgID)
+	// Check SMS Status
+	check, err := ksClient.SMS.Check(ctx, sendMsgResp.MsgID)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -46,7 +46,7 @@ func main() {
 	const destinationPhoneNumber = "380670000200"
 
 	// Надсилання програмованих SMS
-	sendMsgResp, err := ksClient.Send(
+	sendMsgResp, err := ksClient.SMS.Send(
 		ctx,
 		sms.SendReq{
 			From: "messagedesk",
@@ -57,7 +57,7 @@ func main() {
 	log.Println("Sent", sendMsgResp, err)
 
 	// Перевірка статусу програмованих SMS
-	check, err := ksClient.Check(ctx, sendMsgResp.MsgID)
+	check, err := ksClient.SMS.Check(ctx, sendMsgResp.MsgID)
 	if err != nil {
 		log.Fatal(err)
 	}
