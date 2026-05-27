@@ -10,7 +10,7 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 )
 
-func createOauthClient(ctx context.Context, conf Config) (client.Client, error) {
+func NewOauthClient(ctx context.Context, conf Config) (client.Client, error) {
 	authConf := &clientcredentials.Config{
 		ClientID:     conf.ClientID,
 		ClientSecret: conf.ClientSecret,

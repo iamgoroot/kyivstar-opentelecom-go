@@ -58,7 +58,7 @@ func TestRCSSendRichCard(t *testing.T) {
 		To:   "380670000200",
 		ContentExtendedRcs: rcs.ContentRichCard{
 			StandaloneCard: &rcs.StandaloneCard{
-				CardOrientation: strPtr("horizontal"),
+				CardOrientation: new("horizontal"),
 				CardContent: &rcs.CardContent{
 					Title: "Test",
 				},

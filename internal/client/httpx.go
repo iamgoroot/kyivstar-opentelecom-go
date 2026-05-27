@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
-	"path"
 	"sync"
 )
 
@@ -22,7 +22,7 @@ var bufferPool = sync.Pool{
 }
 
 func doWithBody[Req, Resp any](ctx context.Context, r Client, method string, url string, q url.Values, body Req) (Resp, error) {
-	url = path.Join(r.BaseUrl, "rest", url)
+	url = fmt.Sprintf("%s/rest/%s", r.BaseUrl, url)
 
 	if len(q) > 0 {
 		url += "?" + q.Encode()

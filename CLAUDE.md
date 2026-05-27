@@ -7,17 +7,18 @@ Unofficial Go client SDK for the [Kyivstar Open Telecom API](https://api-gateway
 - **Package:** `ksopentelecom`
 - **Go version:** 1.26
 - **Auth:** OAuth2 client-credentials (handled by `oauth.go`)
-- **HTTP client:** `internal/client/client.go` — generic `Get[Resp]`, `Post[Req, Resp]`, and `Put[Req, Resp]` wrappers
+- **HTTP client:** `internal/client/requester.go` — generic `Get[Resp]`, `Post[Req, Resp]`, and `Put[Req, Resp]` wrappers
 
 ## Code Conventions
 
 - Package name matches directory name (e.g., `api/v1/sms` → `package sms`)
 - One product = one package under `api/v1/<product>/`
-- Each product has exactly 3 files: `models.go`, `interface.go`, `client.go`
+- Each product has exactly 4 files: `models.go`, `interface.go`, `client.go`, `README.md`
 - Use `client.Client` for HTTP calls (never `http.Client` directly)
 - Error types go in `internal/models/`; product-specific errors go in the product's `models.go`
 - JSON tags on all exported struct fields
 - No external code generation — write Go code by hand following the `api/v1/sms` template
+- Use `new("value")` / `new(42)` to create pointers to literal values (Go 1.26+) instead of writing helper functions
 
 ## How to Add a New API Product
 
@@ -156,7 +157,7 @@ package ksopentelecom
 import "context"
 
 func NewV2Client(ctx context.Context, conf Config) (V2Client, error) {
-    ksClient, err := createOauthClient(ctx, conf)
+    ksClient, err := NewOauthClient(ctx, conf)
     if err != nil {
         return V2Client{}, err
     }
@@ -186,6 +187,39 @@ func NewV2Client(ctx context.Context, conf Config) (V2Client, error) {
 
 All `subscribers/*` paths use `{phoneNumber}` as a path parameter. Construct the endpoint path using `path.Join("v1/subscribers", phoneNumber, "scoring")`.
 
+## Examples
+
+Standalone examples live in `examples/<product>/` — each has its own `go.mod` and can be built independently.
+
+```
+examples/
+├── sms/           # sms.NewService(ksClient) — standalone usage
+├── rcs/           # rcs.NewService(ksClient)
+├── viber/
+├── promo/
+├── multichannel/
+├── simcheck/
+├── simcount/
+├── scoring/
+├── lifetime/
+├── devicecheck/
+├── otp/
+├── flashcall/
+├── profile/
+└── all/           # ksOpen.NewV1Client(ctx, conf) — aggregated V1Client usage
+```
+
+Each product example uses `NewOauthClient` for auth and `product.NewService(ksClient)` directly. The `all` example demonstrates `V1Client` which bundles all products.
+
+Create new examples at `examples/<product>/main.go` when adding a new product.
+
+## Public API
+
+| Function | Purpose |
+|----------|---------|
+| `NewOauthClient(ctx, conf)` | Creates authenticated `client.Client` for direct product usage |
+| `NewV1Client(ctx, conf)` | Creates `V1Client` with all products wired together |
+
 ## Integration Tests
 
 Tests live in `internal/testing/local/` (same Go module, no separate `go.mod`).
@@ -200,7 +234,6 @@ internal/testing/
     │   ├── sms.go              # RegisterSMS(mux *http.ServeMux)
     │   ├── rcs.go              # RegisterRCS(mux)
     │   └── ...                 # one per product
-    ├── helpers_test.go         # shared test helpers (strPtr, intPtr, etc.)
     ├── sms_test.go             # tests for sms.Service
     ├── rcs_test.go             # tests for rcs.Service
     └── ...                     # one per product
@@ -276,4 +309,10 @@ go test ./internal/testing/local/... -v
 go build ./...
 go vet ./...
 go test ./internal/testing/local/... -v
+```
+
+Build examples individually (each has its own `go.mod`):
+```bash
+go build -C examples/sms .
+go build -C examples/all .
 ```
