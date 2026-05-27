@@ -2,9 +2,9 @@ package devicecheck
 
 import (
 	"context"
-	"fmt"
 	"net/url"
 	"path"
+	"strconv"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
 )
@@ -22,7 +22,8 @@ func (s service) CheckWithImei(ctx context.Context, phoneNumber, imei string, da
 	endpointPath := path.Join("v1/subscribers", phoneNumber, "device-check")
 	q := url.Values{
 		"imei":       {imei},
-		"daysPeriod": {fmt.Sprintf("%d", daysPeriod)},
+		"daysPeriod": {strconv.Itoa(daysPeriod)},
 	}
+
 	return client.Get[CheckRespWithResource](ctx, s.client, endpointPath, q)
 }

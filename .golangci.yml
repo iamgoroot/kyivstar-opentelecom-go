@@ -1,0 +1,77 @@
+version: "2"
+
+formatters:
+  enable:
+    - gofumpt
+    - gci
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/iamgoroot/kyivstar-opentelecom-go)
+
+linters:
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - bodyclose
+    - noctx
+    - contextcheck
+    - gocritic
+    - gocyclo
+    - gocognit
+    - nakedret
+    - prealloc
+    - unconvert
+    - wastedassign
+    - intrange
+    - perfsprint
+    - usestdlibvars
+    - musttag
+    - errname
+    - errorlint
+    - nilerr
+    - thelper
+    - usetesting
+    - testableexamples
+    - tparallel
+    - whitespace
+    - nolintlint
+    - predeclared
+    - goprintffuncname
+    - wsl_v5
+
+  settings:
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - performance
+        - style
+      disabled-checks:
+        - hugeParam
+        - paramTypeCombine
+        - importShadow
+    gocyclo:
+      min-complexity: 15
+    nakedret:
+      max-func-lines: 10
+    wsl_v5:
+      strict-append: true
+      allow-assign-and-anything: false
+      allow-cuddle-declarations: false
+      allow-separated-leading-comment: false
+      force-err-cuddling: true
+      force-case-trailing-whitespace: false
+
+issues:
+  exclude:
+    - path: _test\.go
+      linters:
+        - bodyclose
+        - noctx
+        - contextcheck
+        - usetesting

@@ -6,7 +6,7 @@ import (
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/viber"
 	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/testing/local/handlers"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
 )
 
 func TestViberSendTransaction(t *testing.T) {
@@ -14,6 +14,7 @@ func TestViberSendTransaction(t *testing.T) {
 	defer srv.Close()
 
 	svc := viber.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+
 	resp, err := svc.SendTransaction(context.Background(), viber.TransactionReq{
 		From: "messagedesk",
 		To:   "380670000202",
@@ -22,6 +23,7 @@ func TestViberSendTransaction(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	if resp.Mid == "" {
 		t.Error("expected mid")
 	}
@@ -32,6 +34,7 @@ func TestViberSendPromotionText(t *testing.T) {
 	defer srv.Close()
 
 	svc := viber.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+
 	resp, err := svc.SendPromotionText(context.Background(), viber.PromotionTextReq{
 		From: "messagedesk",
 		To:   "380670000202",
@@ -40,6 +43,7 @@ func TestViberSendPromotionText(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	if resp.Mid == "" {
 		t.Error("expected mid")
 	}
@@ -50,6 +54,7 @@ func TestViberSendPromotionImage(t *testing.T) {
 	defer srv.Close()
 
 	svc := viber.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+
 	resp, err := svc.SendPromotionImage(context.Background(), viber.PromotionImageReq{
 		From:            "messagedesk",
 		To:              "380672000202",
@@ -58,6 +63,7 @@ func TestViberSendPromotionImage(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	if resp.Mid == "" {
 		t.Error("expected mid")
 	}
@@ -68,6 +74,7 @@ func TestViberSendPromotionAction(t *testing.T) {
 	defer srv.Close()
 
 	svc := viber.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+
 	resp, err := svc.SendPromotionAction(context.Background(), viber.PromotionActionReq{
 		From:            "messagedesk",
 		To:              "380672000202",
@@ -77,6 +84,7 @@ func TestViberSendPromotionAction(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	if resp.Mid == "" {
 		t.Error("expected mid")
 	}
@@ -87,10 +95,12 @@ func TestViberCheck(t *testing.T) {
 	defer srv.Close()
 
 	svc := viber.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+
 	resp, err := svc.Check(context.Background(), "test-msg-id")
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	if resp.Status != "delivered" {
 		t.Errorf("unexpected status: %s", resp.Status)
 	}

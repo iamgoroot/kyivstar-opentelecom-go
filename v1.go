@@ -7,5 +7,6 @@ func NewV1Client(ctx context.Context, conf Config) (V1Client, error) {
 	if err != nil {
 		return V1Client{}, err
 	}
+
 	return createV1Client(ksClient)
 }

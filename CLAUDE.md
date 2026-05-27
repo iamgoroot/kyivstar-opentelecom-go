@@ -222,12 +222,12 @@ Create new examples at `examples/<product>/main.go` when adding a new product.
 
 ## Integration Tests
 
-Tests live in `internal/testing/local/` (same Go module, no separate `go.mod`).
+Tests live in `test/local/` (same Go module, no separate `go.mod`).
 
 ### Structure
 
 ```
-internal/testing/
+test/
 └── local/
     ├── handlers/
     │   ├── server.go           # NewServer(register funcs) + writeJSON helper
@@ -241,7 +241,7 @@ internal/testing/
 
 ### How to add a handler
 
-Create `internal/testing/local/handlers/<product>.go`:
+Create `test/local/handlers/<product>.go`:
 
 ```go
 package handlers
@@ -269,7 +269,7 @@ Use hardcoded example values from the OpenAPI spec.
 
 ### How to add a test
 
-Create `internal/testing/local/<product>_test.go`:
+Create `test/local/<product>_test.go`:
 
 ```go
 package testinglocal
@@ -279,7 +279,7 @@ import (
     "testing"
     "github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/sms"
     "github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
-    "github.com/iamgoroot/kyivstar-opentelecom-go/internal/testing/local/handlers"
+    "github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
 )
 
 func TestSMSSend(t *testing.T) {
@@ -300,7 +300,7 @@ func TestSMSSend(t *testing.T) {
 ### Running tests
 
 ```bash
-go test ./internal/testing/local/... -v
+go test ./test/local/... -v
 ```
 
 ## Build & Test
@@ -308,11 +308,12 @@ go test ./internal/testing/local/... -v
 ```bash
 go build ./...
 go vet ./...
-go test ./internal/testing/local/... -v
+golangci-lint run ./...
+go test ./test/local/... -v
 ```
 
-Build examples individually (each has its own `go.mod`):
+Always use `go build -C <dir> -o /dev/null` for examples to avoid leaving compiled binaries: `-C` must come before `-o`:
 ```bash
-go build -C examples/sms .
-go build -C examples/all .
+go build -C examples/sms -o /dev/null .
+go build -C examples/all -o /dev/null .
 ```

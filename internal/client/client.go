@@ -20,11 +20,13 @@ func Get[Resp any](ctx context.Context, r Client, url string, q url.Values) (Res
 	if len(q) > 0 {
 		url += "?" + q.Encode()
 	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
 	if err != nil {
 		var resp Resp
 		return resp, err
 	}
+
 	return do[Resp](r, req)
 }
 
@@ -37,11 +39,14 @@ func Put[Req, Resp any](ctx context.Context, r Client, url string, q url.Values,
 }
 
 func resolveErr(resp *http.Response) error {
-	var kotError models.Err
+	var kotError models.KotError
+
 	err := json.NewDecoder(resp.Body).Decode(&resp)
 	if err != nil {
 		return err
 	}
+
 	kotError.HttpStatus = resp.StatusCode
+
 	return kotError
 }

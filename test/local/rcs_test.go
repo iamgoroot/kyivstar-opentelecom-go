@@ -6,7 +6,7 @@ import (
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/rcs"
 	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/testing/local/handlers"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
 )
 
 func TestRCSSendText(t *testing.T) {
@@ -14,6 +14,7 @@ func TestRCSSendText(t *testing.T) {
 	defer srv.Close()
 
 	svc := rcs.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+
 	resp, err := svc.SendText(context.Background(), rcs.RcsTextReq{
 		From:               "messagedesk",
 		To:                 "380670000200",
@@ -22,6 +23,7 @@ func TestRCSSendText(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	if resp.MsgID == "" {
 		t.Error("expected msgID")
 	}
@@ -32,6 +34,7 @@ func TestRCSSendSuggestion(t *testing.T) {
 	defer srv.Close()
 
 	svc := rcs.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+
 	resp, err := svc.SendSuggestion(context.Background(), rcs.RcsSuggestionReq{
 		From: "messagedesk",
 		To:   "380670000200",
@@ -43,6 +46,7 @@ func TestRCSSendSuggestion(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	if resp.MsgID == "" {
 		t.Error("expected msgID")
 	}
@@ -53,6 +57,7 @@ func TestRCSSendRichCard(t *testing.T) {
 	defer srv.Close()
 
 	svc := rcs.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+
 	resp, err := svc.SendRichCard(context.Background(), rcs.RcsRichCardReq{
 		From: "messagedesk",
 		To:   "380670000200",
@@ -68,6 +73,7 @@ func TestRCSSendRichCard(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	if resp.MsgID == "" {
 		t.Error("expected msgID")
 	}
@@ -78,10 +84,12 @@ func TestRCSCheck(t *testing.T) {
 	defer srv.Close()
 
 	svc := rcs.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+
 	resp, err := svc.Check(context.Background(), "test-msg-id")
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	if resp.Status != "delivered" {
 		t.Errorf("unexpected status: %s", resp.Status)
 	}
