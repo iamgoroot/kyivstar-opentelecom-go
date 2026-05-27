@@ -17,36 +17,20 @@ import (
 	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
 )
 
-type (
-	SMS          = sms.Service
-	RCS          = rcs.Service
-	Viber        = viber.Service
-	Promo        = promo.Service
-	Multichannel = multichannel.Service
-	SimCheck     = simcheck.Service
-	SimCount     = simcount.Service
-	Scoring      = scoring.Service
-	Lifetime     = lifetime.Service
-	DeviceCheck  = devicecheck.Service
-	OTP          = otp.Service
-	FlashCall    = flashcall.Service
-	Profile      = profile.Service
-)
-
 type V1Client struct {
-	SMS sms.Service
-	RCS
-	Viber
-	Promo
-	Multichannel
-	SimCheck
-	SimCount
-	Scoring
-	Lifetime
-	DeviceCheck
-	OTP
-	FlashCall
-	Profile
+	SMS          sms.Service
+	RCS          rcs.Service
+	Viber        viber.Service
+	Promo        promo.Service
+	Multichannel multichannel.Service
+	SimCheck     simcheck.Service
+	SimCount     simcount.Service
+	Scoring      scoring.Service
+	Lifetime     lifetime.Service
+	DeviceCheck  devicecheck.Service
+	OTP          otp.Service
+	FlashCall    flashcall.Service
+	Profile      profile.Service
 }
 
 func createV1Client(ksClient client.Client) (V1Client, error) {

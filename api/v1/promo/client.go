@@ -47,7 +47,7 @@ func (s service) AddImage(ctx context.Context, promoUUID string) (AddImageResp, 
 
 func (s service) ChangeStatus(ctx context.Context, promoUUID, status string) (Promo, error) {
 	endpointPath := path.Join(endpointContextPath, promoUUID, "status", status)
-	return client.Get[Promo](ctx, s.client, endpointPath, nil)
+	return client.Put[struct{}, Promo](ctx, s.client, endpointPath, nil, struct{}{})
 }
 
 func (s service) GetStatistics(ctx context.Context, promoUUID string) (PromoStat, error) {

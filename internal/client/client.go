@@ -1,7 +1,6 @@
 package client
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -30,39 +29,11 @@ func Get[Resp any](ctx context.Context, r Client, url string, q url.Values) (Res
 }
 
 func Post[Req, Resp any](ctx context.Context, r Client, url string, q url.Values, body Req) (Resp, error) {
-	url = fmt.Sprintf("%s/rest/%s", r.BaseUrl, url)
-	if len(q) > 0 {
-		url += "?" + q.Encode()
-	}
-	bodyBytes, err := json.Marshal(body)
-	if err != nil {
-		var resp Resp
-		return resp, err
-	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(bodyBytes))
-	if err != nil {
-		var resp Resp
-		return resp, err
-	}
-	return do[Resp](r, req)
+	return doWithBody[Req, Resp](ctx, r, http.MethodPost, url, q, body)
 }
 
-func do[Resp any](r Client, req *http.Request) (Resp, error) {
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "github.com/iamgoroot/kyivstar-opentelecom-go")
-	var resp Resp
-	rawResp, err := r.Client.Do(req)
-	if err != nil {
-		return resp, err
-	}
-
-	defer rawResp.Body.Close()
-
-	if rawResp.StatusCode >= 300 {
-		return resp, resolveErr(rawResp)
-	}
-	err = json.NewDecoder(rawResp.Body).Decode(&resp)
-	return resp, err
+func Put[Req, Resp any](ctx context.Context, r Client, url string, q url.Values, body Req) (Resp, error) {
+	return doWithBody[Req, Resp](ctx, r, http.MethodPut, url, q, body)
 }
 
 func resolveErr(resp *http.Response) error {
