@@ -8,7 +8,9 @@ import (
 
 type Service interface {
 	Send(ctx context.Context, req SendReq) (SendResp, error)
+	SendBatch(ctx context.Context, req BatchSendReq) (BatchSendResp, error)
 	Check(ctx context.Context, msgID string) (CheckResp, error)
+	CheckBatch(ctx context.Context, req BatchStatusReq) (BatchStatusResp, error)
 }
 
 func NewService(client client.Client) Service {

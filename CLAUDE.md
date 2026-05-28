@@ -19,6 +19,7 @@ Unofficial Go client SDK for the [Kyivstar Open Telecom API](https://api-gateway
 - JSON tags on all exported struct fields
 - No external code generation — write Go code by hand following the `api/v1/sms` template
 - Use `new("value")` / `new(42)` to create pointers to literal values (Go 1.26+) instead of writing helper functions
+- Treat `openapi.yaml` as source of truth for all endpoints, request/response schemas, and product structure. The OpenAPI spec fetched from `https://api-gateway.kyivstar.ua/api/public/openapi.yaml` overrides any secondary documentation.
 
 ## How to Add a New API Product
 
@@ -145,6 +146,11 @@ import "github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/sms"
 
 type SmsSendReq = sms.SendReq
 ```
+
+### Step 5: Validate completeness
+After implementing, verify that the product implementation covers **all endpoints** listed in the OpenAPI spec for that tag (product). Compare the methods in your `interface.go` against each path and HTTP method under that tag in `openapi.yaml`. Every endpoint must have a corresponding method in the `Service` interface.
+
+**Exclude Webhooks** from client implementation — it is a server-side callback feature, not a client API product. No `api/v1/webhooks/` package should be created.
 
 ## How to Add a New API Version (e.g., v2)
 
@@ -308,6 +314,7 @@ go test ./test/local/... -v
 ```bash
 go build ./...
 go vet ./...
+go vulncheck ./...
 golangci-lint run ./...
 go test ./test/local/... -v
 ```

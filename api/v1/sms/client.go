@@ -18,8 +18,18 @@ func (s service) Send(ctx context.Context, req SendReq) (SendResp, error) {
 	return client.Post[SendReq, SendResp](ctx, s.client, endpointContextPath, nil, req)
 }
 
+// SendBatch Відправка SMS (batch)
+func (s service) SendBatch(ctx context.Context, req BatchSendReq) (BatchSendResp, error) {
+	return client.Post[BatchSendReq, BatchSendResp](ctx, s.client, "v1/sms/batch", nil, req)
+}
+
 // Check Перевірка статусу SMS
 func (s service) Check(ctx context.Context, msgID string) (resp CheckResp, err error) {
 	endpointPath := path.Join(endpointContextPath, msgID)
 	return client.Get[CheckResp](ctx, s.client, endpointPath, nil)
+}
+
+// CheckBatch Статус доставки (batch)
+func (s service) CheckBatch(ctx context.Context, req BatchStatusReq) (BatchStatusResp, error) {
+	return client.Post[BatchStatusReq, BatchStatusResp](ctx, s.client, "v1/sms/status/batch", nil, req)
 }
