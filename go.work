@@ -2,5 +2,18 @@ go 1.26.3
 
 use (
 	.
+	./examples/all
+	./examples/devicecheck
+	./examples/flashcall
+	./examples/lifetime
+	./examples/multichannel
+	./examples/otp
+	./examples/profile
+	./examples/promo
+	./examples/rcs
+	./examples/scoring
+	./examples/simcheck
+	./examples/simcount
 	./examples/sms
+	./examples/viber
 )
