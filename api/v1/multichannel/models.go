@@ -1,5 +1,7 @@
 package multichannel
 
+import "github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
+
 type SendReq struct {
 	To           string        `json:"to"`
 	SmsContent   *SmsContent   `json:"smsContent,omitempty"`
@@ -26,10 +28,12 @@ type ViberContent struct {
 }
 
 type SendResp struct {
+	models.ReqInfoGetter
 	MultiMsgID string `json:"multiMsgId"`
 }
 
 type CheckResp struct {
+	models.ReqInfoGetter
 	Date       string    `json:"date"`
 	MultiMsgID string    `json:"multiMsgId"`
 	Status     string    `json:"status"`

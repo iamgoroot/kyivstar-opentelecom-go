@@ -14,22 +14,37 @@ type service struct {
 }
 
 func (s service) SendTransaction(ctx context.Context, req TransactionReq) (SendResp, error) {
-	return client.Post[TransactionReq, SendResp](ctx, s.client, endpointContextPath+"/transaction", nil, req)
+	resp, info, err := client.Post[TransactionReq, SendResp](ctx, s.client, endpointContextPath+"/transaction", nil, req)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }
 
 func (s service) SendPromotionText(ctx context.Context, req PromotionTextReq) (SendResp, error) {
-	return client.Post[PromotionTextReq, SendResp](ctx, s.client, endpointContextPath+"/promotion", nil, req)
+	resp, info, err := client.Post[PromotionTextReq, SendResp](ctx, s.client, endpointContextPath+"/promotion", nil, req)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }
 
 func (s service) SendPromotionImage(ctx context.Context, req PromotionImageReq) (SendResp, error) {
-	return client.Post[PromotionImageReq, SendResp](ctx, s.client, endpointContextPath+"/promotion", nil, req)
+	resp, info, err := client.Post[PromotionImageReq, SendResp](ctx, s.client, endpointContextPath+"/promotion", nil, req)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }
 
 func (s service) SendPromotionAction(ctx context.Context, req PromotionActionReq) (SendResp, error) {
-	return client.Post[PromotionActionReq, SendResp](ctx, s.client, endpointContextPath+"/promotion", nil, req)
+	resp, info, err := client.Post[PromotionActionReq, SendResp](ctx, s.client, endpointContextPath+"/promotion", nil, req)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }
 
 func (s service) Check(ctx context.Context, msgID string) (CheckResp, error) {
 	endpointPath := path.Join(endpointContextPath+"/status", msgID)
-	return client.Get[CheckResp](ctx, s.client, endpointPath, nil)
+	resp, info, err := client.Get[CheckResp](ctx, s.client, endpointPath, nil)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }

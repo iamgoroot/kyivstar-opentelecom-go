@@ -19,21 +19,33 @@ type service struct {
 
 // Send Відправка SMS
 func (s service) Send(ctx context.Context, req SendReq) (SendResp, error) {
-	return client.Post[SendReq, SendResp](ctx, s.client, endpointContextPath, nil, req)
+	resp, info, err := client.Post[SendReq, SendResp](ctx, s.client, endpointContextPath, nil, req)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }
 
 // SendBatch Відправка SMS (batch)
 func (s service) SendBatch(ctx context.Context, req BatchSendReq) (BatchSendResp, error) {
-	return client.Post[BatchSendReq, BatchSendResp](ctx, s.client, batchSendEndpoint, nil, req)
+	resp, info, err := client.Post[BatchSendReq, BatchSendResp](ctx, s.client, batchSendEndpoint, nil, req)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }
 
 // Check Перевірка статусу SMS
 func (s service) Check(ctx context.Context, msgID string) (CheckResp, error) {
 	endpointPath := path.Join(endpointContextPath, msgID)
-	return client.Get[CheckResp](ctx, s.client, endpointPath, nil)
+	resp, info, err := client.Get[CheckResp](ctx, s.client, endpointPath, nil)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }
 
 // CheckBatch Статус доставки (batch)
 func (s service) CheckBatch(ctx context.Context, req BatchStatusReq) (BatchStatusResp, error) {
-	return client.Post[BatchStatusReq, BatchStatusResp](ctx, s.client, batchCheckEndpoint, nil, req)
+	resp, info, err := client.Post[BatchStatusReq, BatchStatusResp](ctx, s.client, batchCheckEndpoint, nil, req)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }

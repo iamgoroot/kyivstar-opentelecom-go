@@ -17,5 +17,8 @@ func (s service) Check(ctx context.Context, phoneNumber string, checkPeriod int)
 	endpointPath := path.Join("v1/subscribers", phoneNumber, "sim-check-antifraud")
 	q := url.Values{"checkPeriod": {strconv.Itoa(checkPeriod)}}
 
-	return client.Get[CheckResp](ctx, s.client, endpointPath, q)
+	resp, info, err := client.Get[CheckResp](ctx, s.client, endpointPath, q)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }

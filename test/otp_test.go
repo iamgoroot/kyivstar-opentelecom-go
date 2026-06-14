@@ -5,34 +5,43 @@ import (
 	"testing"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/otp"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/test/handlers"
 )
 
 func TestOTPSend(t *testing.T) {
 	svc := otp.NewService(setupTestClient(t, handlers.RegisterOTP))
+	var resp otp.SendResp
 
-	resp, err := svc.Send(context.Background(), otp.SendReq{
-		To: "380677770200",
+	retryOnRateLimit(t, func() error {
+		var err error
+		resp, err = svc.Send(context.Background(), otp.SendReq{
+			To: "380677770200",
+		})
+		return err
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	if resp.Resource == nil || resp.Resource.Status != "SUCCESS" {
 		t.Errorf("unexpected status: %s", resp.Resource.Status)
+	}
+
+	info := resp.GetReqInfo()
+	if info.RequestID == "" {
+		t.Error("expected RequestID")
 	}
 }
 
 func TestOTPCheck(t *testing.T) {
 	svc := otp.NewService(setupTestClient(t, handlers.RegisterOTP))
+	var resp otp.CheckResp
 
-	resp, err := svc.Check(context.Background(), otp.CheckReq{
-		SubscriberID:   "380677770200",
-		ValidationCode: "4545",
+	retryOnRateLimit(t, func() error {
+		var err error
+		resp, err = svc.Check(context.Background(), otp.CheckReq{
+			SubscriberID:   "380677770200",
+			ValidationCode: "4545",
+		})
+		return err
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	if resp.Resource == nil || resp.Resource.Status != "VALID" {
 		t.Errorf("unexpected status: %s", resp.Resource.Status)

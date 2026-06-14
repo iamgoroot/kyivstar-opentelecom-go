@@ -10,6 +10,7 @@ type KotError struct {
 	ErrorCode  int    `json:"errorCode"`
 	ErrorMsg   string `json:"errorMsg"`
 	HttpStatus int    `json:"httpStatus"`
+	Info       ReqInfo
 }
 
 func (e KotError) Error() string {

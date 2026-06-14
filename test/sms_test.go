@@ -8,33 +8,42 @@ import (
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/sms"
 	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
 	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/test/handlers"
 )
 
 func TestSMSSend(t *testing.T) {
 	svc := sms.NewService(setupTestClient(t, handlers.RegisterSMS))
+	var resp sms.SendResp
 
-	resp, err := svc.Send(context.Background(), sms.SendReq{
-		From: "messagedesk",
-		To:   "380670000200",
-		Text: "Hello World!",
+	retryOnRateLimit(t, func() error {
+		var err error
+		resp, err = svc.Send(context.Background(), sms.SendReq{
+			From: "messagedesk",
+			To:   "380670000200",
+			Text: "Hello World!",
+		})
+		return err
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	if resp.MsgID == "" {
 		t.Error("expected msgID")
+	}
+
+	info := resp.GetReqInfo()
+	if info.RequestID == "" {
+		t.Error("expected RequestID")
 	}
 }
 
 func TestSMSCheck(t *testing.T) {
 	svc := sms.NewService(setupTestClient(t, handlers.RegisterSMS))
+	var resp sms.CheckResp
 
-	resp, err := svc.Check(context.Background(), "20200000-0000-0000-0000-380670000200")
-	if err != nil {
-		t.Fatal(err)
-	}
+	retryOnRateLimit(t, func() error {
+		var err error
+		resp, err = svc.Check(context.Background(), "20200000-0000-0000-0000-380670000200")
+		return err
+	})
 
 	if resp.Status != "delivered" {
 		t.Errorf("unexpected status: %s", resp.Status)
@@ -43,16 +52,18 @@ func TestSMSCheck(t *testing.T) {
 
 func TestSMSSendBatch(t *testing.T) {
 	svc := sms.NewService(setupTestClient(t, handlers.RegisterSMS))
+	var resp sms.BatchSendResp
 
-	resp, err := svc.SendBatch(context.Background(), sms.BatchSendReq{
-		Data: map[string]sms.SendReq{
-			"uniqueMsgKey1": {From: "messagedesk", To: "380670000200", Text: "Hello World!"},
-			"uniqueMsgKey2": {From: "messagedesk", To: "380670000201", Text: "Hello again!"},
-		},
+	retryOnRateLimit(t, func() error {
+		var err error
+		resp, err = svc.SendBatch(context.Background(), sms.BatchSendReq{
+			Data: map[string]sms.SendReq{
+				"uniqueMsgKey1": {From: "messagedesk", To: "380670000200", Text: "Hello World!"},
+				"uniqueMsgKey2": {From: "messagedesk", To: "380670000201", Text: "Hello again!"},
+			},
+		})
+		return err
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	if len(resp.Data) != 2 {
 		t.Errorf("expected 2 items, got %d", len(resp.Data))
@@ -65,13 +76,15 @@ func TestSMSSendBatch(t *testing.T) {
 
 func TestSMSCheckBatch(t *testing.T) {
 	svc := sms.NewService(setupTestClient(t, handlers.RegisterSMS))
+	var resp sms.BatchStatusResp
 
-	resp, err := svc.CheckBatch(context.Background(), sms.BatchStatusReq{
-		Data: []string{"20200000-0000-0000-0000-380670000200"},
+	retryOnRateLimit(t, func() error {
+		var err error
+		resp, err = svc.CheckBatch(context.Background(), sms.BatchStatusReq{
+			Data: []string{"20200000-0000-0000-0000-380670000200"},
+		})
+		return err
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	item, ok := resp.Data["20200000-0000-0000-0000-380670000200"]
 	if !ok {
@@ -84,10 +97,6 @@ func TestSMSCheckBatch(t *testing.T) {
 }
 
 func TestSMSSendError(t *testing.T) {
-	if !isRunningLocally() {
-		t.Skip("error tests only run locally")
-	}
-
 	srv := handlers.NewServer(handlers.RegisterSMSErrors)
 	defer srv.Close()
 
@@ -121,10 +130,6 @@ func TestSMSSendError(t *testing.T) {
 }
 
 func TestSMSCheckError(t *testing.T) {
-	if !isRunningLocally() {
-		t.Skip("error tests only run locally")
-	}
-
 	srv := handlers.NewServer(handlers.RegisterSMSErrors)
 	defer srv.Close()
 
@@ -154,10 +159,6 @@ func TestSMSCheckError(t *testing.T) {
 }
 
 func TestSMSSendBatchError(t *testing.T) {
-	if !isRunningLocally() {
-		t.Skip("error tests only run locally")
-	}
-
 	srv := handlers.NewServer(handlers.RegisterSMSErrors)
 	defer srv.Close()
 
@@ -181,10 +182,6 @@ func TestSMSSendBatchError(t *testing.T) {
 }
 
 func TestSMSCheckBatchError(t *testing.T) {
-	if !isRunningLocally() {
-		t.Skip("error tests only run locally")
-	}
-
 	srv := handlers.NewServer(handlers.RegisterSMSErrors)
 	defer srv.Close()
 

@@ -13,9 +13,15 @@ type service struct {
 }
 
 func (s service) Create(ctx context.Context, req CreateReq) (CreateResp, error) {
-	return client.Post[CreateReq, CreateResp](ctx, s.client, endpointContextPath+"/flash-call", nil, req)
+	resp, info, err := client.Post[CreateReq, CreateResp](ctx, s.client, endpointContextPath+"/flash-call", nil, req)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }
 
 func (s service) Check(ctx context.Context, req CheckReq) (CheckResp, error) {
-	return client.Post[CheckReq, CheckResp](ctx, s.client, endpointContextPath+"/flash-call/check", nil, req)
+	resp, info, err := client.Post[CheckReq, CheckResp](ctx, s.client, endpointContextPath+"/flash-call/check", nil, req)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }

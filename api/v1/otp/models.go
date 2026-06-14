@@ -1,11 +1,14 @@
 package otp
 
+import "github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
+
 type SendReq struct {
 	To         string `json:"to"`
 	TemplateID *int   `json:"templateId,omitempty"`
 }
 
 type SendResp struct {
+	models.ReqInfoGetter
 	Cid      string   `json:"cid"`
 	ReqID    string   `json:"reqId"`
 	Resource *SendRes `json:"resource,omitempty"`
@@ -22,6 +25,7 @@ type CheckReq struct {
 }
 
 type CheckResp struct {
+	models.ReqInfoGetter
 	ReqID    string    `json:"reqId"`
 	Cid      string    `json:"cid"`
 	Resource *CheckRes `json:"resource,omitempty"`

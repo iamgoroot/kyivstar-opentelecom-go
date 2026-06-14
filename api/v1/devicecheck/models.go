@@ -1,6 +1,9 @@
 package devicecheck
 
+import "github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
+
 type CheckResp struct {
+	models.ReqInfoGetter
 	ReqID   string   `json:"reqId"`
 	Cid     string   `json:"cid"`
 	ImeiRes string   `json:"imeiRes,omitempty"`
@@ -8,6 +11,7 @@ type CheckResp struct {
 }
 
 type CheckRespWithResource struct {
+	models.ReqInfoGetter
 	ReqID    string    `json:"reqId"`
 	Cid      string    `json:"cid"`
 	Resource *Resource `json:"resource,omitempty"`

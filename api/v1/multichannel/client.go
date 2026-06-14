@@ -14,10 +14,16 @@ type service struct {
 }
 
 func (s service) Send(ctx context.Context, req SendReq) (SendResp, error) {
-	return client.Post[SendReq, SendResp](ctx, s.client, endpointContextPath+"/multichannel", nil, req)
+	resp, info, err := client.Post[SendReq, SendResp](ctx, s.client, endpointContextPath+"/multichannel", nil, req)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }
 
 func (s service) Check(ctx context.Context, multiMsgID string) (CheckResp, error) {
 	endpointPath := path.Join(endpointContextPath+"/multichannel", multiMsgID)
-	return client.Get[CheckResp](ctx, s.client, endpointPath, nil)
+	resp, info, err := client.Get[CheckResp](ctx, s.client, endpointPath, nil)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }

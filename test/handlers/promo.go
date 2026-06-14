@@ -72,8 +72,8 @@ func RegisterPromo(mux *http.ServeMux) {
 	})
 	mux.HandleFunc("GET /rest/v1/promo/{promoUUID}/statistics", func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, map[string]any{
-			"sentCount":                        10,
-			"deliveriesCount":                  8,
+			"sentCount":                        0,
+			"deliveriesCount":                  0,
 			"unmatchedCount":                   0,
 			"deliveriesPortionsCount":          0,
 			"deliveriesUnmatchedPortionsCount": 0,

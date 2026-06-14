@@ -5,16 +5,18 @@ import (
 	"testing"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/profile"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/test/handlers"
 )
 
 func TestProfileGet(t *testing.T) {
-	if !isRunningLocally() {
-		t.Skip("flaky: mock data not found — will fix later")
-	}
 	svc := profile.NewService(setupTestClient(t, handlers.RegisterProfile))
 
-	resp, err := svc.Get(context.Background(), `{ profile(msisdn:"380672000200") { age gender } }`)
+	resp, err := svc.Get(context.Background(), `{
+ profile(msisdn:"380672000200"){
+age
+gender
+ }
+}`)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -25,5 +27,10 @@ func TestProfileGet(t *testing.T) {
 
 	if resp.Data.Profile.Gender != "MALE" {
 		t.Errorf("unexpected gender: %s", resp.Data.Profile.Gender)
+	}
+
+	info := resp.GetReqInfo()
+	if info.RequestID == "" {
+		t.Error("expected RequestID")
 	}
 }

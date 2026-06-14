@@ -1,5 +1,7 @@
 package viber
 
+import "github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
+
 type TransactionReq struct {
 	From          string `json:"from"`
 	To            string `json:"to"`
@@ -40,11 +42,13 @@ type ContentExtendedAction struct {
 }
 
 type SendResp struct {
+	models.ReqInfoGetter
 	ReqID string `json:"reqId"`
 	Mid   string `json:"mid"`
 }
 
 type CheckResp struct {
+	models.ReqInfoGetter
 	ReqID  string `json:"reqId"`
 	Mid    string `json:"mid"`
 	Status string `json:"status"`

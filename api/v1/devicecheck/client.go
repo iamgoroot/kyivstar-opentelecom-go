@@ -15,7 +15,10 @@ type service struct {
 
 func (s service) Check(ctx context.Context, phoneNumber string) (CheckRespWithResource, error) {
 	endpointPath := path.Join("v1/subscribers", phoneNumber, "device-check")
-	return client.Get[CheckRespWithResource](ctx, s.client, endpointPath, nil)
+	resp, info, err := client.Get[CheckRespWithResource](ctx, s.client, endpointPath, nil)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }
 
 func (s service) CheckWithImei(ctx context.Context, phoneNumber, imei string, daysPeriod int) (CheckRespWithResource, error) {
@@ -25,5 +28,8 @@ func (s service) CheckWithImei(ctx context.Context, phoneNumber, imei string, da
 		"daysPeriod": {strconv.Itoa(daysPeriod)},
 	}
 
-	return client.Get[CheckRespWithResource](ctx, s.client, endpointPath, q)
+	resp, info, err := client.Get[CheckRespWithResource](ctx, s.client, endpointPath, q)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }

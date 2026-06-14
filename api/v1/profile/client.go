@@ -13,5 +13,8 @@ type service struct {
 }
 
 func (s service) Get(ctx context.Context, query string) (ProfileResp, error) {
-	return client.Post[QueryReq, ProfileResp](ctx, s.client, endpointContextPath+"/profile", nil, QueryReq{Query: query})
+	resp, info, err := client.Post[QueryReq, ProfileResp](ctx, s.client, endpointContextPath+"/profile", nil, QueryReq{Query: query})
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }

@@ -25,4 +25,4 @@ jobs:
         with:
           version: latest
 
-      - run: go test ./test/local/... -v
+      - run: go test ./test/... -v

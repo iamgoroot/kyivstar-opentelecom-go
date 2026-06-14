@@ -13,9 +13,15 @@ type service struct {
 }
 
 func (s service) Send(ctx context.Context, req SendReq) (SendResp, error) {
-	return client.Post[SendReq, SendResp](ctx, s.client, endpointContextPath+"/sms", nil, req)
+	resp, info, err := client.Post[SendReq, SendResp](ctx, s.client, endpointContextPath+"/sms", nil, req)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }
 
 func (s service) Check(ctx context.Context, req CheckReq) (CheckResp, error) {
-	return client.Post[CheckReq, CheckResp](ctx, s.client, endpointContextPath+"/sms/check", nil, req)
+	resp, info, err := client.Post[CheckReq, CheckResp](ctx, s.client, endpointContextPath+"/sms/check", nil, req)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }

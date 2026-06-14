@@ -1,10 +1,13 @@
 package flashcall
 
+import "github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
+
 type CreateReq struct {
 	To string `json:"to"`
 }
 
 type CreateResp struct {
+	models.ReqInfoGetter
 	Cid      string     `json:"cid"`
 	ReqID    string     `json:"reqId"`
 	Resource *CreateRes `json:"resource,omitempty"`
@@ -20,6 +23,7 @@ type CheckReq struct {
 }
 
 type CheckResp struct {
+	models.ReqInfoGetter
 	ReqID    string    `json:"reqId"`
 	Cid      string    `json:"cid"`
 	Resource *CheckRes `json:"resource,omitempty"`

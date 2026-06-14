@@ -1,5 +1,7 @@
 package promo
 
+import "github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
+
 type CreateSMSReq struct {
 	From         string `json:"from"`
 	Text         string `json:"text"`
@@ -29,6 +31,7 @@ type CreateRCSReq struct {
 }
 
 type Promo struct {
+	models.ReqInfoGetter
 	ID                    string          `json:"id,omitempty"`
 	AuthorUsername        string          `json:"authorUsername,omitempty"`
 	Status                string          `json:"status,omitempty"`
@@ -54,6 +57,7 @@ type SMSContent struct {
 }
 
 type ListResp struct {
+	models.ReqInfoGetter
 	ReqID         string  `json:"reqId"`
 	Promos        []Promo `json:"promos,omitempty"`
 	TotalPages    int     `json:"totalPages,omitempty"`
@@ -72,16 +76,19 @@ type AudienceMember struct {
 }
 
 type AddAudienceResp struct {
+	models.ReqInfoGetter
 	ReqID string `json:"reqId"`
 	Name  string `json:"name"`
 }
 
 type AddImageResp struct {
+	models.ReqInfoGetter
 	ReqID   string `json:"reqId"`
 	Success bool   `json:"success"`
 }
 
 type PromoStat struct {
+	models.ReqInfoGetter
 	SentCount                        int `json:"sentCount,omitempty"`
 	DeliveriesCount                  int `json:"deliveriesCount,omitempty"`
 	UnmatchedCount                   int `json:"unmatchedCount,omitempty"`

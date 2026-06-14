@@ -5,12 +5,36 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"testing"
+	"time"
 
 	ksOpen "github.com/iamgoroot/kyivstar-opentelecom-go"
 	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
 	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/test/handlers"
 )
+
+func retryOnRateLimit(t *testing.T, fn func() error) {
+	t.Helper()
+
+	for range 10 {
+		err := fn()
+		if err == nil {
+			return
+		}
+
+		var ke models.KotError
+		if errors.As(err, &ke) && ke.HttpStatus == http.StatusTooManyRequests {
+			t.Logf("rate limited, waiting %ds...", ke.Info.RateLimit.Reset)
+			time.Sleep(time.Duration(ke.Info.RateLimit.Reset)*time.Second + 100*time.Millisecond)
+			continue
+		}
+
+		t.Fatal(err)
+	}
+
+	t.Fatal("max retries exceeded")
+}
 
 func asKotError(err error, out *models.KotError) bool {
 	if ke, ok := errors.AsType[models.KotError](err); ok {

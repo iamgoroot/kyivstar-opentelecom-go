@@ -1,43 +1,54 @@
 package testinglocal
 
 import (
+	"bytes"
 	"context"
+	"image"
+	"image/png"
 	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/promo"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/test/handlers"
 )
 
 func TestPromoCreateSMS(t *testing.T) {
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
+	var resp promo.Promo
 
-	resp, err := svc.CreateSMS(context.Background(), promo.CreateSMSReq{
-		From:         "author",
-		Text:         "Hello ${1}",
-		CampaignType: "SMS",
+	retryOnRateLimit(t, func() error {
+		var err error
+		resp, err = svc.CreateSMS(context.Background(), promo.CreateSMSReq{
+			From:         "author",
+			Text:         "Hello ${1}",
+			CampaignType: "SMS",
+		})
+		return err
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	if resp.Status != "DRAFT" {
 		t.Errorf("unexpected status: %s", resp.Status)
+	}
+
+	info := resp.GetReqInfo()
+	if info.RequestID == "" {
+		t.Error("expected RequestID")
 	}
 }
 
 func TestPromoCreateViber(t *testing.T) {
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
+	var resp promo.Promo
 
-	resp, err := svc.CreateViber(context.Background(), promo.CreateViberReq{
-		From:         "author",
-		Text:         "Hello ${1}",
-		CampaignType: "VIBER",
+	retryOnRateLimit(t, func() error {
+		var err error
+		resp, err = svc.CreateViber(context.Background(), promo.CreateViberReq{
+			From:         "author",
+			Text:         "Hello ${1}",
+			CampaignType: "VIBER",
+		})
+		return err
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	if resp.Status != "DRAFT" {
 		t.Errorf("unexpected status: %s", resp.Status)
@@ -46,15 +57,17 @@ func TestPromoCreateViber(t *testing.T) {
 
 func TestPromoCreateRCS(t *testing.T) {
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
+	var resp promo.Promo
 
-	resp, err := svc.CreateRCS(context.Background(), promo.CreateRCSReq{
-		From:         "author",
-		Text:         "Hello ${1}",
-		CampaignType: "RCS",
+	retryOnRateLimit(t, func() error {
+		var err error
+		resp, err = svc.CreateRCS(context.Background(), promo.CreateRCSReq{
+			From:         "author",
+			Text:         "Hello ${1}",
+			CampaignType: "RCS",
+		})
+		return err
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	if resp.Status != "DRAFT" {
 		t.Errorf("unexpected status: %s", resp.Status)
@@ -64,11 +77,13 @@ func TestPromoCreateRCS(t *testing.T) {
 func TestPromoList(t *testing.T) {
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
 	q := url.Values{"pageSize": {"10"}, "pageNumber": {"0"}}
+	var resp promo.ListResp
 
-	resp, err := svc.List(context.Background(), q)
-	if err != nil {
-		t.Fatal(err)
-	}
+	retryOnRateLimit(t, func() error {
+		var err error
+		resp, err = svc.List(context.Background(), q)
+		return err
+	})
 
 	if len(resp.Promos) == 0 {
 		t.Error("expected promos")
@@ -76,12 +91,9 @@ func TestPromoList(t *testing.T) {
 }
 
 func TestPromoGet(t *testing.T) {
-	if !isRunningLocally() {
-		t.Skip("flaky: mock data not found — will fix later")
-	}
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
 
-	resp, err := svc.Get(context.Background(), "00000000-0000-0000-0000-000000000200")
+	resp, err := svc.Get(context.Background(), "10000000-0000-0000-0000-000000000200")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -92,13 +104,10 @@ func TestPromoGet(t *testing.T) {
 }
 
 func TestPromoAddAudience(t *testing.T) {
-	if !isRunningLocally() {
-		t.Skip("flaky: mock data not found — will fix later")
-	}
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
 
-	resp, err := svc.AddAudience(context.Background(), "00000000-0000-0000-0000-000000000200", promo.AddAudienceReq{
-		Audience: []promo.AudienceMember{{Params: []string{"John"}, PhoneNumber: "380671234200"}},
+	resp, err := svc.AddAudience(context.Background(), "10000000-0000-0000-0000-000000000200", promo.AddAudienceReq{
+		Audience: []promo.AudienceMember{{Params: []string{"John", "Smith"}, PhoneNumber: "380671234200"}},
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -110,15 +119,15 @@ func TestPromoAddAudience(t *testing.T) {
 }
 
 func TestPromoAddImage(t *testing.T) {
-	if !isRunningLocally() {
-		t.Skip("AddImage test only runs locally")
-	}
-
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
 
-	img := strings.NewReader("fake-image-data")
-
-	resp, err := svc.AddImage(context.Background(), "00000000-0000-0000-0000-000000000200", "test.png", img)
+	img := image.NewRGBA(image.Rect(0, 0, 500, 500))
+	var buf bytes.Buffer
+	err := png.Encode(&buf, img)
+	if err != nil {
+		t.Error(err)
+	}
+	resp, err := svc.AddImage(context.Background(), "10000000-0000-0000-0000-000000000200", "test.png", &buf)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -129,12 +138,9 @@ func TestPromoAddImage(t *testing.T) {
 }
 
 func TestPromoChangeStatus(t *testing.T) {
-	if !isRunningLocally() {
-		t.Skip("flaky: mock data not found — will fix later")
-	}
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
 
-	resp, err := svc.ChangeStatus(context.Background(), "00000000-0000-0000-0000-000000000200", "WAITING")
+	resp, err := svc.ChangeStatus(context.Background(), "20000000-0000-0000-0000-000000000200", "WAITING")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -144,20 +150,21 @@ func TestPromoChangeStatus(t *testing.T) {
 	}
 }
 
-// TODO: update after proper mock mode mocks
 func TestPromoGetStatistics(t *testing.T) {
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
+	var resp promo.PromoStat
 
-	resp, err := svc.GetStatistics(context.Background(), "20000000-0000-0000-0000-000000000200")
-	if err != nil {
-		t.Fatal(err)
-	}
-	// TODO: update after proper mock mode mocks
+	retryOnRateLimit(t, func() error {
+		var err error
+		resp, err = svc.GetStatistics(context.Background(), "20000000-0000-0000-0000-000000000200")
+		return err
+	})
+
 	if resp.SentCount != 0 {
 		t.Errorf("unexpected sentCount: %d", resp.SentCount)
 	}
+
 	if resp.WasNotSent != 20 {
 		t.Errorf("unexpected wasNotSent: %d", resp.WasNotSent)
 	}
-
 }

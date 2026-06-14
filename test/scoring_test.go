@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/scoring"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/test/handlers"
 )
 
 func TestScoring(t *testing.T) {
@@ -18,5 +18,10 @@ func TestScoring(t *testing.T) {
 
 	if resp.Resource == nil || resp.Resource.ScoreBal < 0.000_1 {
 		t.Error("expected scoreBal above minimal threshold")
+	}
+
+	info := resp.GetReqInfo()
+	if info.RequestID == "" {
+		t.Error("expected RequestID")
 	}
 }

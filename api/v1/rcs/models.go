@@ -1,5 +1,7 @@
 package rcs
 
+import "github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
+
 type RcsTextReq struct {
 	From               string      `json:"from"`
 	To                 string      `json:"to"`
@@ -63,11 +65,13 @@ type Suggestion struct {
 }
 
 type SendResp struct {
+	models.ReqInfoGetter
 	ReqID string `json:"reqId"`
 	MsgID string `json:"msgId"`
 }
 
 type CheckResp struct {
+	models.ReqInfoGetter
 	ReqID  string `json:"reqId"`
 	MsgID  string `json:"msgId"`
 	Status string `json:"status"`

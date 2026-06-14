@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/lifetime"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/test/handlers"
 )
 
 func TestLifetime(t *testing.T) {
@@ -20,5 +20,10 @@ func TestLifetime(t *testing.T) {
 		t.Error("expected lifetimeDuration")
 	} else if resp.Resource.LifetimeDuration.TimeUnit != "MONTHS" {
 		t.Errorf("unexpected timeUnit: %s", resp.Resource.LifetimeDuration.TimeUnit)
+	}
+
+	info := resp.GetReqInfo()
+	if info.RequestID == "" {
+		t.Error("expected RequestID")
 	}
 }

@@ -244,26 +244,25 @@ Create new examples at `examples/<product>/main.go` when adding a new product.
 
 ## Integration Tests
 
-Tests live in `test/local/` (same Go module, no separate `go.mod`).
+Tests live in `test/` (same Go module, no separate `go.mod`).
 
 ### Structure
 
 ```
 test/
-└── local/
-    ├── handlers/
-    │   ├── server.go           # NewServer(register funcs) + writeJSON helper
-    │   ├── sms.go              # RegisterSMS(mux *http.ServeMux)
-    │   ├── rcs.go              # RegisterRCS(mux)
-    │   └── ...                 # one per product
-    ├── sms_test.go             # tests for sms.Service
-    ├── rcs_test.go             # tests for rcs.Service
-    └── ...                     # one per product
+├── handlers/
+│   ├── server.go           # NewServer(register funcs) + writeJSON helper
+│   ├── sms.go              # RegisterSMS(mux *http.ServeMux)
+│   ├── rcs.go              # RegisterRCS(mux)
+│   └── ...                 # one per product
+├── sms_test.go             # tests for sms.Service
+├── rcs_test.go             # tests for rcs.Service
+└── ...                     # one per product
 ```
 
 ### How to add a handler
 
-Create `test/local/handlers/<product>.go`:
+Create `test/handlers/<product>.go`:
 
 ```go
 package handlers
@@ -291,7 +290,7 @@ Use hardcoded example values from the OpenAPI spec.
 
 ### How to add a test
 
-Create `test/local/<product>_test.go`:
+Create `test/<product>_test.go`:
 
 ```go
 package testinglocal
@@ -301,7 +300,7 @@ import (
     "testing"
     "github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/sms"
     "github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
-    "github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
+    "github.com/iamgoroot/kyivstar-opentelecom-go/test/handlers"
 )
 
 func TestSMSSend(t *testing.T) {
@@ -322,7 +321,7 @@ func TestSMSSend(t *testing.T) {
 ### Running tests
 
 ```bash
-go test ./test/local/... -v
+go test ./test/... -v
 ```
 
 ## Build & Test
@@ -333,7 +332,7 @@ go build ./...
 go vet ./...
 go vulncheck ./...
 golangci-lint run ./...
-go test ./test/local/... -v
+go test ./test/... -v
 ```
 
 Always use `go build -C <dir> -o /dev/null` for examples to avoid leaving compiled binaries: `-C` must come before `-o`:

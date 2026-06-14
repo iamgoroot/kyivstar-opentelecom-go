@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/simcheck"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/test/handlers"
 )
 
 func TestSimCheck(t *testing.T) {
@@ -18,5 +18,10 @@ func TestSimCheck(t *testing.T) {
 
 	if resp.Resource == nil || resp.Resource.SimChanged == nil {
 		t.Error("expected simChanged in resource")
+	}
+
+	info := resp.GetReqInfo()
+	if info.RequestID == "" {
+		t.Error("expected RequestID")
 	}
 }

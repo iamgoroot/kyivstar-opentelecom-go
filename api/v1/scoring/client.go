@@ -17,5 +17,8 @@ func (s service) Check(ctx context.Context, phoneNumber string, scoreFormula int
 	endpointPath := path.Join("v1/subscribers", phoneNumber, "scoring")
 	q := url.Values{"scoreFormula": {strconv.Itoa(scoreFormula)}}
 
-	return client.Get[CheckResp](ctx, s.client, endpointPath, q)
+	resp, info, err := client.Get[CheckResp](ctx, s.client, endpointPath, q)
+	resp.ReqInfoGetter = info
+
+	return resp, err
 }

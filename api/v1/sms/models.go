@@ -1,6 +1,10 @@
 package sms
 
-import "time"
+import (
+	"time"
+
+	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
+)
 
 type SendReq struct {
 	From string `json:"from"`
@@ -9,11 +13,13 @@ type SendReq struct {
 }
 
 type SendResp struct {
+	models.ReqInfoGetter
 	ReqID string `json:"reqId"`
 	MsgID string `json:"msgId"`
 }
 
 type CheckResp struct {
+	models.ReqInfoGetter
 	ReqID  string     `json:"reqId"`
 	MsgID  string     `json:"msgId"`
 	Status string     `json:"status"`
@@ -32,6 +38,7 @@ type BatchSendItemResp struct {
 }
 
 type BatchSendResp struct {
+	models.ReqInfoGetter
 	ReqID string                       `json:"reqId"`
 	Data  map[string]BatchSendItemResp `json:"data"`
 }
@@ -47,6 +54,7 @@ type BatchStatusItemResp struct {
 }
 
 type BatchStatusResp struct {
+	models.ReqInfoGetter
 	ReqID string                         `json:"reqId"`
 	Data  map[string]BatchStatusItemResp `json:"data"`
 }
