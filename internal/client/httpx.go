@@ -5,6 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"sync"
@@ -29,6 +31,8 @@ func doWithBody[Req, Resp any](ctx context.Context, r Client, method string, url
 	}
 
 	bodyBuf := bufferPool.Get().(*bytes.Buffer)
+	bodyBuf.Reset()
+
 	defer func() {
 		if bodyBuf.Cap() < maxPooledBufferSize {
 			bufferPool.Put(bodyBuf)
@@ -51,7 +55,10 @@ func doWithBody[Req, Resp any](ctx context.Context, r Client, method string, url
 }
 
 func do[Resp any](r Client, req *http.Request) (Resp, error) {
-	req.Header.Set("Content-Type", "application/json")
+	if req.Header.Get("Content-Type") == "" {
+		req.Header.Set("Content-Type", "application/json")
+	}
+
 	req.Header.Set("User-Agent", "github.com/iamgoroot/kyivstar-opentelecom-go")
 
 	var resp Resp
@@ -61,7 +68,10 @@ func do[Resp any](r Client, req *http.Request) (Resp, error) {
 		return resp, err
 	}
 
-	defer func() { _ = rawResp.Body.Close() }()
+	defer func() {
+		_, _ = io.Copy(io.Discard, rawResp.Body)
+		_ = rawResp.Body.Close()
+	}()
 
 	if rawResp.StatusCode >= 300 {
 		return resp, resolveErr(rawResp)
@@ -70,4 +80,39 @@ func do[Resp any](r Client, req *http.Request) (Resp, error) {
 	err = json.NewDecoder(rawResp.Body).Decode(&resp)
 
 	return resp, err
+}
+
+func PostMultipart[Resp any](ctx context.Context, r Client, url, fieldName, fileName string, file io.Reader) (Resp, error) {
+	url = fmt.Sprintf("%s/rest/%s", r.BaseUrl, url)
+
+	var buf bytes.Buffer
+	mw := multipart.NewWriter(&buf)
+
+	fw, err := mw.CreateFormFile(fieldName, fileName)
+	if err != nil {
+		var resp Resp
+		return resp, err
+	}
+
+	_, err = io.Copy(fw, file)
+	if err != nil {
+		var resp Resp
+		return resp, err
+	}
+
+	err = mw.Close()
+	if err != nil {
+		var resp Resp
+		return resp, err
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, &buf)
+	if err != nil {
+		var resp Resp
+		return resp, err
+	}
+
+	req.Header.Set("Content-Type", mw.FormDataContentType())
+
+	return do[Resp](r, req)
 }

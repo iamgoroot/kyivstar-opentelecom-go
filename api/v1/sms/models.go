@@ -9,13 +9,13 @@ type SendReq struct {
 }
 
 type SendResp struct {
-	ReqID string `json:"reqID"`
-	MsgID string `json:"msgID"`
+	ReqID string `json:"reqId"`
+	MsgID string `json:"msgId"`
 }
 
 type CheckResp struct {
-	ReqID  string     `json:"reqID"`
-	MsgID  string     `json:"msgID"`
+	ReqID  string     `json:"reqId"`
+	MsgID  string     `json:"msgId"`
 	Status string     `json:"status"`
 	Date   *time.Time `json:"date"`
 }
@@ -32,7 +32,7 @@ type BatchSendItemResp struct {
 }
 
 type BatchSendResp struct {
-	ReqID string                       `json:"reqID"`
+	ReqID string                       `json:"reqId"`
 	Data  map[string]BatchSendItemResp `json:"data"`
 }
 
@@ -47,6 +47,6 @@ type BatchStatusItemResp struct {
 }
 
 type BatchStatusResp struct {
-	ReqID string                         `json:"reqID"`
+	ReqID string                         `json:"reqId"`
 	Data  map[string]BatchStatusItemResp `json:"data"`
 }

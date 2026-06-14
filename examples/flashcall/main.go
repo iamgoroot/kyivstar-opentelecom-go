@@ -36,5 +36,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("Flash call verified: status=%s", checkResp.Cid)
+	log.Printf("Flash call verified: status=%s", checkResp.Resource.Status)
 }

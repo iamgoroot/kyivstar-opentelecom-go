@@ -29,7 +29,7 @@ func (s service) SendPromotionAction(ctx context.Context, req PromotionActionReq
 	return client.Post[PromotionActionReq, SendResp](ctx, s.client, endpointContextPath+"/promotion", nil, req)
 }
 
-func (s service) Check(ctx context.Context, msgID string) (resp CheckResp, err error) {
+func (s service) Check(ctx context.Context, msgID string) (CheckResp, error) {
 	endpointPath := path.Join(endpointContextPath+"/status", msgID)
 	return client.Get[CheckResp](ctx, s.client, endpointPath, nil)
 }

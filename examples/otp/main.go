@@ -36,5 +36,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("OTP verified: status=%s", checkResp.ReqID)
+	log.Printf("OTP verified: status=%s", checkResp.Resource.Status)
 }

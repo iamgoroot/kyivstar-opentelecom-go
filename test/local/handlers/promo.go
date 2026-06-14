@@ -1,6 +1,9 @@
 package handlers
 
-import "net/http"
+import (
+	"io"
+	"net/http"
+)
 
 func RegisterPromo(mux *http.ServeMux) {
 	mux.HandleFunc("POST /rest/v1/promo", func(w http.ResponseWriter, r *http.Request) {
@@ -47,6 +50,15 @@ func RegisterPromo(mux *http.ServeMux) {
 		})
 	})
 	mux.HandleFunc("POST /rest/v1/promo/{promoUUID}/image", func(w http.ResponseWriter, r *http.Request) {
+		file, _, err := r.FormFile("file")
+		if err != nil {
+			http.Error(w, "missing file", http.StatusBadRequest)
+			return
+		}
+
+		_, _ = io.Copy(io.Discard, file)
+		file.Close()
+
 		writeJSON(w, map[string]any{
 			"reqId":   "ad30594292f7959683a410bf1add088e",
 			"success": true,

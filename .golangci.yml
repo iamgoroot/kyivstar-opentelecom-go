@@ -1,16 +1,3 @@
-version: "2"
-
-formatters:
-  enable:
-    - gofumpt
-    - gci
-  settings:
-    gci:
-      sections:
-        - standard
-        - default
-        - prefix(github.com/iamgoroot/kyivstar-opentelecom-go)
-
 linters:
   enable:
     - errcheck
@@ -43,7 +30,7 @@ linters:
     - nolintlint
     - predeclared
     - goprintffuncname
-    - wsl_v5
+    - wsl
 
   settings:
     gocritic:
@@ -59,7 +46,7 @@ linters:
       min-complexity: 15
     nakedret:
       max-func-lines: 10
-    wsl_v5:
+    wsl:
       strict-append: true
       allow-assign-and-anything: false
       allow-cuddle-declarations: false
@@ -68,7 +55,7 @@ linters:
       force-case-trailing-whitespace: false
 
 issues:
-  exclude:
+  exclude-rules:
     - path: _test\.go
       linters:
         - bodyclose

@@ -2,6 +2,7 @@ package promo
 
 import (
 	"context"
+	"io"
 	"net/url"
 	"path"
 
@@ -40,9 +41,9 @@ func (s service) AddAudience(ctx context.Context, promoUUID string, req AddAudie
 	return client.Post[AddAudienceReq, AddAudienceResp](ctx, s.client, endpointPath, nil, req)
 }
 
-func (s service) AddImage(ctx context.Context, promoUUID string) (AddImageResp, error) {
+func (s service) AddImage(ctx context.Context, promoUUID string, fileName string, file io.Reader) (AddImageResp, error) {
 	endpointPath := path.Join(endpointContextPath, promoUUID, "image")
-	return client.Post[AddImageResp, AddImageResp](ctx, s.client, endpointPath, nil, AddImageResp{})
+	return client.PostMultipart[AddImageResp](ctx, s.client, endpointPath, "file", fileName, file)
 }
 
 func (s service) ChangeStatus(ctx context.Context, promoUUID, status string) (Promo, error) {

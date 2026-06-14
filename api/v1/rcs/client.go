@@ -25,7 +25,7 @@ func (s service) SendRichCard(ctx context.Context, req RcsRichCardReq) (SendResp
 	return client.Post[RcsRichCardReq, SendResp](ctx, s.client, endpointContextPath+"/richcard", nil, req)
 }
 
-func (s service) Check(ctx context.Context, msgID string) (resp CheckResp, err error) {
+func (s service) Check(ctx context.Context, msgID string) (CheckResp, error) {
 	endpointPath := path.Join(endpointContextPath, msgID)
 	return client.Get[CheckResp](ctx, s.client, endpointPath, nil)
 }

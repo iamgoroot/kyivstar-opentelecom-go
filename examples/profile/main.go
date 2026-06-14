@@ -21,7 +21,7 @@ func main() {
 
 	svc := profile.NewService(ksClient)
 
-	resp, err := svc.Get(ctx, "380670000200")
+	resp, err := svc.Get(ctx, `{ profile(msisdn:"380670000200") { age gender } }`)
 	if err != nil {
 		log.Fatal(err)
 	}

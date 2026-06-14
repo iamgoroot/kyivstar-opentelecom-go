@@ -3,6 +3,7 @@ package testinglocal
 import (
 	"context"
 	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/promo"
@@ -127,7 +128,9 @@ func TestPromoAddImage(t *testing.T) {
 
 	svc := promo.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
 
-	resp, err := svc.AddImage(context.Background(), "00000000-0000-0000-0000-000000000200")
+	img := strings.NewReader("fake-image-data")
+
+	resp, err := svc.AddImage(context.Background(), "00000000-0000-0000-0000-000000000200", "test.png", img)
 	if err != nil {
 		t.Fatal(err)
 	}

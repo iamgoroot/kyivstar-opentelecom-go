@@ -147,7 +147,23 @@ import "github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/sms"
 type SmsSendReq = sms.SendReq
 ```
 
-### Step 5: Validate completeness
+### Step 5: Format and organize imports
+
+```bash
+gofmt -s -w .
+goimports -w .
+```
+
+### Step 6: Build and check
+
+```bash
+go build ./...
+go vet ./...
+go vulncheck ./...
+golangci-lint run ./...
+```
+
+### Step 7: Validate completeness
 After implementing, verify that the product implementation covers **all endpoints** listed in the OpenAPI spec for that tag (product). Compare the methods in your `interface.go` against each path and HTTP method under that tag in `openapi.yaml`. Every endpoint must have a corresponding method in the `Service` interface.
 
 **Exclude Webhooks** from client implementation — it is a server-side callback feature, not a client API product. No `api/v1/webhooks/` package should be created.
@@ -312,6 +328,7 @@ go test ./test/local/... -v
 ## Build & Test
 
 ```bash
+go get -u ./...
 go build ./...
 go vet ./...
 go vulncheck ./...

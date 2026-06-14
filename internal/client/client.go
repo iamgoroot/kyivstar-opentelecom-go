@@ -41,7 +41,7 @@ func Put[Req, Resp any](ctx context.Context, r Client, url string, q url.Values,
 func resolveErr(resp *http.Response) error {
 	var kotError models.KotError
 
-	err := json.NewDecoder(resp.Body).Decode(&resp)
+	err := json.NewDecoder(resp.Body).Decode(&kotError)
 	if err != nil {
 		return err
 	}
