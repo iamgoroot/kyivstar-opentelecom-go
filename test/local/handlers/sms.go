@@ -51,32 +51,28 @@ func RegisterSMS(mux *http.ServeMux) {
 
 func RegisterSMSErrors(mux *http.ServeMux) {
 	mux.HandleFunc("POST /rest/v1/sms", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusBadRequest)
-		writeJSON(w, map[string]any{
+		writeJSONStatus(w, http.StatusBadRequest, map[string]any{
 			"reqId":     "err-req-id",
 			"errorCode": 40001,
 			"errorMsg":  "Invalid phone number format",
 		})
 	})
 	mux.HandleFunc("GET /rest/v1/sms/{msgId}", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
-		writeJSON(w, map[string]any{
+		writeJSONStatus(w, http.StatusNotFound, map[string]any{
 			"reqId":     "err-req-id",
 			"errorCode": 40401,
 			"errorMsg":  "Message not found",
 		})
 	})
 	mux.HandleFunc("POST /rest/v1/sms/batch", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusUnauthorized)
-		writeJSON(w, map[string]any{
+		writeJSONStatus(w, http.StatusUnauthorized, map[string]any{
 			"reqId":     "err-req-id",
 			"errorCode": 40101,
 			"errorMsg":  "Invalid credentials",
 		})
 	})
 	mux.HandleFunc("POST /rest/v1/sms/status/batch", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusInternalServerError)
-		writeJSON(w, map[string]any{
+		writeJSONStatus(w, http.StatusInternalServerError, map[string]any{
 			"reqId":     "err-req-id",
 			"errorCode": 50001,
 			"errorMsg":  "Internal server error",

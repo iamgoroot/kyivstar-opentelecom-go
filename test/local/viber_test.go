@@ -5,15 +5,11 @@ import (
 	"testing"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/viber"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
 	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
 )
 
 func TestViberSendTransaction(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterViber)
-	defer srv.Close()
-
-	svc := viber.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := viber.NewService(setupTestClient(t, handlers.RegisterViber))
 
 	resp, err := svc.SendTransaction(context.Background(), viber.TransactionReq{
 		From: "messagedesk",
@@ -30,10 +26,7 @@ func TestViberSendTransaction(t *testing.T) {
 }
 
 func TestViberSendPromotionText(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterViber)
-	defer srv.Close()
-
-	svc := viber.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := viber.NewService(setupTestClient(t, handlers.RegisterViber))
 
 	resp, err := svc.SendPromotionText(context.Background(), viber.PromotionTextReq{
 		From: "messagedesk",
@@ -50,10 +43,7 @@ func TestViberSendPromotionText(t *testing.T) {
 }
 
 func TestViberSendPromotionImage(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterViber)
-	defer srv.Close()
-
-	svc := viber.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := viber.NewService(setupTestClient(t, handlers.RegisterViber))
 
 	resp, err := svc.SendPromotionImage(context.Background(), viber.PromotionImageReq{
 		From:            "messagedesk",
@@ -70,10 +60,7 @@ func TestViberSendPromotionImage(t *testing.T) {
 }
 
 func TestViberSendPromotionAction(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterViber)
-	defer srv.Close()
-
-	svc := viber.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := viber.NewService(setupTestClient(t, handlers.RegisterViber))
 
 	resp, err := svc.SendPromotionAction(context.Background(), viber.PromotionActionReq{
 		From:            "messagedesk",
@@ -91,12 +78,9 @@ func TestViberSendPromotionAction(t *testing.T) {
 }
 
 func TestViberCheck(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterViber)
-	defer srv.Close()
+	svc := viber.NewService(setupTestClient(t, handlers.RegisterViber))
 
-	svc := viber.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
-
-	resp, err := svc.Check(context.Background(), "test-msg-id")
+	resp, err := svc.Check(context.Background(), "20200000-0000-0000-0000-380670000200")
 	if err != nil {
 		t.Fatal(err)
 	}

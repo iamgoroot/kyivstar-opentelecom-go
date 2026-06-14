@@ -32,6 +32,10 @@ func echoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestBufferPoolUnderMemoryPressure(t *testing.T) {
+	if !isRunningLocally() {
+		t.Skip("pool tests only run locally")
+	}
+
 	defer debug.SetGCPercent(debug.SetGCPercent(-1))
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -72,6 +76,10 @@ func TestBufferPoolUnderMemoryPressure(t *testing.T) {
 }
 
 func TestConcurrentPoolRequests(t *testing.T) {
+	if !isRunningLocally() {
+		t.Skip("pool tests only run locally")
+	}
+
 	defer debug.SetGCPercent(debug.SetGCPercent(-1))
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

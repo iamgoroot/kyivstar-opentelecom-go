@@ -5,15 +5,11 @@ import (
 	"testing"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/rcs"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
 	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
 )
 
 func TestRCSSendText(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterRCS)
-	defer srv.Close()
-
-	svc := rcs.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := rcs.NewService(setupTestClient(t, handlers.RegisterRCS))
 
 	resp, err := svc.SendText(context.Background(), rcs.RcsTextReq{
 		From:               "messagedesk",
@@ -30,10 +26,7 @@ func TestRCSSendText(t *testing.T) {
 }
 
 func TestRCSSendSuggestion(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterRCS)
-	defer srv.Close()
-
-	svc := rcs.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := rcs.NewService(setupTestClient(t, handlers.RegisterRCS))
 
 	resp, err := svc.SendSuggestion(context.Background(), rcs.RcsSuggestionReq{
 		From: "messagedesk",
@@ -53,19 +46,21 @@ func TestRCSSendSuggestion(t *testing.T) {
 }
 
 func TestRCSSendRichCard(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterRCS)
-	defer srv.Close()
-
-	svc := rcs.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := rcs.NewService(setupTestClient(t, handlers.RegisterRCS))
 
 	resp, err := svc.SendRichCard(context.Background(), rcs.RcsRichCardReq{
 		From: "messagedesk",
 		To:   "380670000200",
 		ContentExtendedRcs: rcs.ContentRichCard{
 			StandaloneCard: &rcs.StandaloneCard{
-				CardOrientation: new("horizontal"),
+				ThumbnailImageAlignment: new("left"),
+				CardOrientation:         new("horizontal"),
 				CardContent: &rcs.CardContent{
 					Title: "Test",
+					Media: &rcs.Media{
+						ThumbnailUrl: "https://example.com/thumb.png",
+						FileUrl:      "https://example.com/file.png",
+					},
 				},
 			},
 		},
@@ -80,12 +75,9 @@ func TestRCSSendRichCard(t *testing.T) {
 }
 
 func TestRCSCheck(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterRCS)
-	defer srv.Close()
+	svc := rcs.NewService(setupTestClient(t, handlers.RegisterRCS))
 
-	svc := rcs.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
-
-	resp, err := svc.Check(context.Background(), "test-msg-id")
+	resp, err := svc.Check(context.Background(), "20200000-0000-0000-0000-380670000200")
 	if err != nil {
 		t.Fatal(err)
 	}

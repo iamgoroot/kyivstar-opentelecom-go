@@ -5,15 +5,11 @@ import (
 	"testing"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/flashcall"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
 	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
 )
 
 func TestFlashCallCreate(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterFlashCall)
-	defer srv.Close()
-
-	svc := flashcall.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := flashcall.NewService(setupTestClient(t, handlers.RegisterFlashCall))
 
 	resp, err := svc.Create(context.Background(), flashcall.CreateReq{
 		To: "380677770200",
@@ -28,10 +24,7 @@ func TestFlashCallCreate(t *testing.T) {
 }
 
 func TestFlashCallCheck(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterFlashCall)
-	defer srv.Close()
-
-	svc := flashcall.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := flashcall.NewService(setupTestClient(t, handlers.RegisterFlashCall))
 
 	resp, err := svc.Check(context.Background(), flashcall.CheckReq{
 		SubscriberID:   "380677770200",

@@ -71,9 +71,22 @@ func RegisterPromo(mux *http.ServeMux) {
 		})
 	})
 	mux.HandleFunc("GET /rest/v1/promo/{promoUUID}/statistics", func(w http.ResponseWriter, r *http.Request) {
-		writeJSON(w, map[string]int{
-			"sentCount":       10,
-			"deliveriesCount": 8,
+		writeJSON(w, map[string]any{
+			"sentCount":                        10,
+			"deliveriesCount":                  8,
+			"unmatchedCount":                   0,
+			"deliveriesPortionsCount":          0,
+			"deliveriesUnmatchedPortionsCount": 0,
+			"deliveriesInternalPortionsCount":  0,
+			"deliveriesExternalPortionsCount":  0,
+			"undeliveredCount":                 0,
+			"unknownStatusCount":               0,
+			"canceledByContactPolicyCount":     0,
+			"seenCount":                        0,
+			"blacklistedCount":                 0,
+			"declinedCount":                    0,
+			"expiredCount":                     0,
+			"wasNotSent":                       20,
 		})
 	})
 }

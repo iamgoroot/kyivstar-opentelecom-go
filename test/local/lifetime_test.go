@@ -5,15 +5,11 @@ import (
 	"testing"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/lifetime"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
 	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
 )
 
 func TestLifetime(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterLifetime)
-	defer srv.Close()
-
-	svc := lifetime.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := lifetime.NewService(setupTestClient(t, handlers.RegisterLifetime))
 
 	resp, err := svc.Check(context.Background(), "380670170200")
 	if err != nil {

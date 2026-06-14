@@ -5,15 +5,11 @@ import (
 	"testing"
 
 	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/otp"
-	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
 	"github.com/iamgoroot/kyivstar-opentelecom-go/test/local/handlers"
 )
 
 func TestOTPSend(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterOTP)
-	defer srv.Close()
-
-	svc := otp.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := otp.NewService(setupTestClient(t, handlers.RegisterOTP))
 
 	resp, err := svc.Send(context.Background(), otp.SendReq{
 		To: "380677770200",
@@ -28,10 +24,7 @@ func TestOTPSend(t *testing.T) {
 }
 
 func TestOTPCheck(t *testing.T) {
-	srv := handlers.NewServer(handlers.RegisterOTP)
-	defer srv.Close()
-
-	svc := otp.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := otp.NewService(setupTestClient(t, handlers.RegisterOTP))
 
 	resp, err := svc.Check(context.Background(), otp.CheckReq{
 		SubscriberID:   "380677770200",
