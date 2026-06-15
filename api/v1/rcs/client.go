@@ -13,22 +13,22 @@ type service struct {
 	client client.Client
 }
 
-func (s service) SendText(ctx context.Context, req RcsTextReq) (SendResp, error) {
-	resp, info, err := client.Post[RcsTextReq, SendResp](ctx, s.client, endpointContextPath+"/text", nil, req)
+func (s service) SendText(ctx context.Context, req TextReq) (SendResp, error) {
+	resp, info, err := client.Post[TextReq, SendResp](ctx, s.client, endpointContextPath+"/text", nil, req)
 	resp.ReqInfoGetter = info
 
 	return resp, err
 }
 
-func (s service) SendSuggestion(ctx context.Context, req RcsSuggestionReq) (SendResp, error) {
-	resp, info, err := client.Post[RcsSuggestionReq, SendResp](ctx, s.client, endpointContextPath+"/suggestion", nil, req)
+func (s service) SendSuggestion(ctx context.Context, req SuggestionReq) (SendResp, error) {
+	resp, info, err := client.Post[SuggestionReq, SendResp](ctx, s.client, endpointContextPath+"/suggestion", nil, req)
 	resp.ReqInfoGetter = info
 
 	return resp, err
 }
 
-func (s service) SendRichCard(ctx context.Context, req RcsRichCardReq) (SendResp, error) {
-	resp, info, err := client.Post[RcsRichCardReq, SendResp](ctx, s.client, endpointContextPath+"/richcard", nil, req)
+func (s service) SendRichCard(ctx context.Context, req RichCardReq) (SendResp, error) {
+	resp, info, err := client.Post[RichCardReq, SendResp](ctx, s.client, endpointContextPath+"/richcard", nil, req)
 	resp.ReqInfoGetter = info
 
 	return resp, err

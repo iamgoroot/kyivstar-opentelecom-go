@@ -55,7 +55,7 @@ func do[Resp any](r Client, req *http.Request) (Resp, models.ReqInfo, error) {
 }
 
 func doWithBody[Req, Resp any](ctx context.Context, r Client, method string, path string, q url.Values, body Req) (Resp, models.ReqInfo, error) {
-	fullURL := composeUrl(r.BaseUrl, path, q)
+	fullURL := composeURL(r.BaseURL, path, q)
 
 	bodyBuf := bufferPool.Get().(*bytes.Buffer)
 	bodyBuf.Reset()
@@ -81,9 +81,10 @@ func doWithBody[Req, Resp any](ctx context.Context, r Client, method string, pat
 	return do[Resp](r, req)
 }
 
-func composeUrl(base, url string, q url.Values) string {
+func composeURL(base, path string, q url.Values) string {
 	if len(q) > 0 {
-		return fmt.Sprintf("%s/rest/%s?%s", base, url, q.Encode())
+		return fmt.Sprintf("%s/rest/%s?%s", base, path, q.Encode())
 	}
-	return fmt.Sprintf("%s/rest/%s", base, url)
+
+	return fmt.Sprintf("%s/rest/%s", base, path)
 }

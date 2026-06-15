@@ -6,21 +6,21 @@ type TransactionReq struct {
 	From          string `json:"from"`
 	To            string `json:"to"`
 	Text          string `json:"text"`
-	MessageTtlSec *int   `json:"messageTtlSec,omitempty"`
+	MessageTTLSec *int   `json:"messageTtlSec,omitempty"`
 }
 
 type PromotionTextReq struct {
 	From          string `json:"from"`
 	To            string `json:"to"`
 	Text          string `json:"text"`
-	MessageTtlSec *int   `json:"messageTtlSec,omitempty"`
+	MessageTTLSec *int   `json:"messageTtlSec,omitempty"`
 }
 
 type PromotionImageReq struct {
 	From            string             `json:"from"`
 	To              string             `json:"to"`
 	ContentExtended ContentExtendedImg `json:"contentExtended"`
-	MessageTtlSec   *int               `json:"messageTtlSec,omitempty"`
+	MessageTTLSec   *int               `json:"messageTtlSec,omitempty"`
 }
 
 type PromotionActionReq struct {
@@ -28,7 +28,7 @@ type PromotionActionReq struct {
 	To              string                `json:"to"`
 	Text            string                `json:"text"`
 	ContentExtended ContentExtendedAction `json:"contentExtended"`
-	MessageTtlSec   *int                  `json:"messageTtlSec,omitempty"`
+	MessageTTLSec   *int                  `json:"messageTtlSec,omitempty"`
 }
 
 type ContentExtendedImg struct {

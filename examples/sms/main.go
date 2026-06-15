@@ -11,7 +11,7 @@ import (
 func main() {
 	ctx := context.Background()
 	ksClient, err := ksOpen.NewOauthClient(ctx, ksOpen.Config{
-		ServerUrl:    ksOpen.Gateway,
+		ServerURL:    ksOpen.Gateway,
 		ClientID:     "your_client_id",
 		ClientSecret: "your_client_secret",
 	})

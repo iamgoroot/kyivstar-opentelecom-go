@@ -10,7 +10,7 @@ const (
 )
 
 type Config struct {
-	ServerUrl    string     `json:"serverUrl" yaml:"serverUrl"`
+	ServerURL    string     `json:"serverUrl" yaml:"serverUrl"`
 	ClientID     string     `json:"clientId" yaml:"clientId"`
 	ClientSecret string     `json:"clientSecret" yaml:"clientSecret"`
 	ServerMode   ServerMode `json:"serverMode" yaml:"serverMode"`

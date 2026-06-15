@@ -6,7 +6,7 @@ import (
 )
 
 func RegisterPromo(mux *http.ServeMux) {
-	mux.HandleFunc("POST /rest/v1/promo", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("POST /rest/v1/promo", func(w http.ResponseWriter, _ *http.Request) {
 		writeJSON(w, map[string]any{
 			"id":                    "00000000-0000-0000-0000-000000000200",
 			"authorUsername":        "user@user.com",
@@ -20,7 +20,7 @@ func RegisterPromo(mux *http.ServeMux) {
 			},
 		})
 	})
-	mux.HandleFunc("GET /rest/v1/promo", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /rest/v1/promo", func(w http.ResponseWriter, _ *http.Request) {
 		writeJSON(w, map[string]any{
 			"reqId":         "ad30594292f7959683a410bf1add088e",
 			"totalPages":    1,
@@ -43,7 +43,7 @@ func RegisterPromo(mux *http.ServeMux) {
 			"status":         "DRAFT",
 		})
 	})
-	mux.HandleFunc("POST /rest/v1/promo/{promoUUID}/audience", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("POST /rest/v1/promo/{promoUUID}/audience", func(w http.ResponseWriter, _ *http.Request) {
 		writeJSON(w, map[string]string{
 			"reqId": "ad30594292f7959683a410bf1add088e",
 			"name":  "audience-list-1",
@@ -56,8 +56,10 @@ func RegisterPromo(mux *http.ServeMux) {
 			return
 		}
 
-		_, _ = io.Copy(io.Discard, file)
-		file.Close()
+		defer func() {
+			_, _ = io.Copy(io.Discard, file)
+			_ = file.Close()
+		}()
 
 		writeJSON(w, map[string]any{
 			"reqId":   "ad30594292f7959683a410bf1add088e",
@@ -70,7 +72,7 @@ func RegisterPromo(mux *http.ServeMux) {
 			"status": r.PathValue("status"),
 		})
 	})
-	mux.HandleFunc("GET /rest/v1/promo/{promoUUID}/statistics", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /rest/v1/promo/{promoUUID}/statistics", func(w http.ResponseWriter, _ *http.Request) {
 		writeJSON(w, map[string]any{
 			"sentCount":                        0,
 			"deliveriesCount":                  0,

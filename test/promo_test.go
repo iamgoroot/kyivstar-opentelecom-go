@@ -14,15 +14,19 @@ import (
 
 func TestPromoCreateSMS(t *testing.T) {
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
-	var resp promo.Promo
+
+	var (
+		resp promo.Promo
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.CreateSMS(context.Background(), promo.CreateSMSReq{
 			From:         "author",
 			Text:         "Hello ${1}",
 			CampaignType: "SMS",
 		})
+
 		return err
 	})
 
@@ -38,15 +42,19 @@ func TestPromoCreateSMS(t *testing.T) {
 
 func TestPromoCreateViber(t *testing.T) {
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
-	var resp promo.Promo
+
+	var (
+		resp promo.Promo
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.CreateViber(context.Background(), promo.CreateViberReq{
 			From:         "author",
 			Text:         "Hello ${1}",
 			CampaignType: "VIBER",
 		})
+
 		return err
 	})
 
@@ -57,15 +65,19 @@ func TestPromoCreateViber(t *testing.T) {
 
 func TestPromoCreateRCS(t *testing.T) {
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
-	var resp promo.Promo
+
+	var (
+		resp promo.Promo
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.CreateRCS(context.Background(), promo.CreateRCSReq{
 			From:         "author",
 			Text:         "Hello ${1}",
 			CampaignType: "RCS",
 		})
+
 		return err
 	})
 
@@ -77,11 +89,15 @@ func TestPromoCreateRCS(t *testing.T) {
 func TestPromoList(t *testing.T) {
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
 	q := url.Values{"pageSize": {"10"}, "pageNumber": {"0"}}
-	var resp promo.ListResp
+
+	var (
+		resp promo.ListResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.List(context.Background(), q)
+
 		return err
 	})
 
@@ -122,11 +138,14 @@ func TestPromoAddImage(t *testing.T) {
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
 
 	img := image.NewRGBA(image.Rect(0, 0, 500, 500))
+
 	var buf bytes.Buffer
+
 	err := png.Encode(&buf, img)
 	if err != nil {
 		t.Error(err)
 	}
+
 	resp, err := svc.AddImage(context.Background(), "10000000-0000-0000-0000-000000000200", "test.png", &buf)
 	if err != nil {
 		t.Fatal(err)
@@ -152,11 +171,15 @@ func TestPromoChangeStatus(t *testing.T) {
 
 func TestPromoGetStatistics(t *testing.T) {
 	svc := promo.NewService(setupTestClient(t, handlers.RegisterPromo))
-	var resp promo.PromoStat
+
+	var (
+		resp promo.Stat
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.GetStatistics(context.Background(), "20000000-0000-0000-0000-000000000200")
+
 		return err
 	})
 

@@ -10,13 +10,17 @@ import (
 
 func TestOTPSend(t *testing.T) {
 	svc := otp.NewService(setupTestClient(t, handlers.RegisterOTP))
-	var resp otp.SendResp
+
+	var (
+		resp otp.SendResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.Send(context.Background(), otp.SendReq{
 			To: "380677770200",
 		})
+
 		return err
 	})
 
@@ -32,14 +36,18 @@ func TestOTPSend(t *testing.T) {
 
 func TestOTPCheck(t *testing.T) {
 	svc := otp.NewService(setupTestClient(t, handlers.RegisterOTP))
-	var resp otp.CheckResp
+
+	var (
+		resp otp.CheckResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.Check(context.Background(), otp.CheckReq{
 			SubscriberID:   "380677770200",
 			ValidationCode: "4545",
 		})
+
 		return err
 	})
 

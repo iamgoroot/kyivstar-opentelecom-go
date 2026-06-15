@@ -15,7 +15,7 @@ type CreateViberReq struct {
 	StartDate     string `json:"startDate,omitempty"`
 	Action        string `json:"action,omitempty"`
 	Caption       string `json:"caption,omitempty"`
-	MessageTtlSec *int   `json:"messageTtlSec,omitempty"`
+	MessageTTLSec *int   `json:"messageTtlSec,omitempty"`
 }
 
 type CreateRCSReq struct {
@@ -27,7 +27,7 @@ type CreateRCSReq struct {
 	Caption        string `json:"caption,omitempty"`
 	Title          string `json:"title,omitempty"`
 	RcsContentType string `json:"rcsContentType,omitempty"`
-	MessageTtlSec  *int   `json:"messageTtlSec,omitempty"`
+	MessageTTLSec  *int   `json:"messageTtlSec,omitempty"`
 }
 
 type Promo struct {
@@ -53,7 +53,7 @@ type MessageContent struct {
 type SMSContent struct {
 	Text         string `json:"text,omitempty"`
 	SourceNumber string `json:"sourceNumber,omitempty"`
-	MessageTtl   int    `json:"messageTtl,omitempty"`
+	MessageTTL   int    `json:"messageTtl,omitempty"`
 }
 
 type ListResp struct {
@@ -87,7 +87,7 @@ type AddImageResp struct {
 	Success bool   `json:"success"`
 }
 
-type PromoStat struct {
+type Stat struct {
 	models.ReqInfoGetter
 	SentCount                        int `json:"sentCount,omitempty"`
 	DeliveriesCount                  int `json:"deliveriesCount,omitempty"`

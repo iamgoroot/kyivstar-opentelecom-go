@@ -10,7 +10,7 @@ import (
 
 func main() {
 	conf := ksOpen.Config{
-		ServerUrl:    ksOpen.Gateway,
+		ServerURL:    ksOpen.Gateway,
 		ServerMode:   ksOpen.ServerModeMock,
 		ClientID:     "your_client_id",
 		ClientSecret: "your_client_secret",

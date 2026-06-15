@@ -11,7 +11,7 @@ import (
 func main() {
 	ctx := context.Background()
 	ksClient, err := ksOpen.NewOauthClient(ctx, ksOpen.Config{
-		ServerUrl:    ksOpen.Gateway,
+		ServerURL:    ksOpen.Gateway,
 		ClientID:     "your_client_id",
 		ClientSecret: "your_client_secret",
 	})
@@ -21,7 +21,7 @@ func main() {
 
 	svc := rcs.NewService(ksClient)
 
-	resp, err := svc.SendText(ctx, rcs.RcsTextReq{
+	resp, err := svc.SendText(ctx, rcs.TextReq{
 		From: "messagedesk",
 		To:   "380670000200",
 		ContentExtendedRcs: rcs.ContentText{

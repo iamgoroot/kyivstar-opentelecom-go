@@ -12,7 +12,7 @@ type SmsContent struct {
 	Priority       int     `json:"priority"`
 	From           string  `json:"from"`
 	Text           string  `json:"text"`
-	MessageTtlSec  int     `json:"messageTtlSec"`
+	MessageTTLSec  int     `json:"messageTtlSec"`
 	CallbackNumber *string `json:"callbackNumber,omitempty"`
 }
 
@@ -21,7 +21,7 @@ type ViberContent struct {
 	From          string  `json:"from"`
 	PromoType     string  `json:"promoType,omitempty"`
 	Text          string  `json:"text"`
-	MessageTtlSec int     `json:"messageTtlSec"`
+	MessageTTLSec int     `json:"messageTtlSec"`
 	Img           *string `json:"img,omitempty"`
 	Caption       *string `json:"caption,omitempty"`
 	Action        *string `json:"action,omitempty"`

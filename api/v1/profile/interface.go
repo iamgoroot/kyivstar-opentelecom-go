@@ -7,9 +7,9 @@ import (
 )
 
 type Service interface {
-	Get(ctx context.Context, query string) (ProfileResp, error)
+	Get(ctx context.Context, query string) (Resp, error)
 }
 
-func NewService(client client.Client) Service {
-	return &service{client: client}
+func NewService(c client.Client) Service {
+	return &service{client: c}
 }

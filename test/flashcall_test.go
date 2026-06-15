@@ -10,13 +10,17 @@ import (
 
 func TestFlashCallCreate(t *testing.T) {
 	svc := flashcall.NewService(setupTestClient(t, handlers.RegisterFlashCall))
-	var resp flashcall.CreateResp
+
+	var (
+		resp flashcall.CreateResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.Create(context.Background(), flashcall.CreateReq{
 			To: "380677770200",
 		})
+
 		return err
 	})
 
@@ -32,14 +36,18 @@ func TestFlashCallCreate(t *testing.T) {
 
 func TestFlashCallCheck(t *testing.T) {
 	svc := flashcall.NewService(setupTestClient(t, handlers.RegisterFlashCall))
-	var resp flashcall.CheckResp
+
+	var (
+		resp flashcall.CheckResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.Check(context.Background(), flashcall.CheckReq{
 			SubscriberID:   "380677770200",
 			ValidationCode: "4545",
 		})
+
 		return err
 	})
 

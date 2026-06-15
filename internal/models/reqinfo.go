@@ -1,20 +1,20 @@
 package models
 
 type RateLimit struct {
-	Limit     int
-	PeriodSec int
-	Remaining int
-	Reset     int
+	Limit     int `json:"limit"`
+	PeriodSec int `json:"periodSec"`
+	Remaining int `json:"remaining"`
+	Reset     int `json:"reset"`
 }
 
 type Tariffication struct {
-	Units int
+	Units int `json:"units"`
 }
 
 type ReqInfo struct {
 	RateLimit
 	Tariffication
-	RequestID string
+	RequestID string `json:"requestId"`
 }
 
 func (r ReqInfo) GetReqInfo() ReqInfo {

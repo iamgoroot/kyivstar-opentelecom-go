@@ -1,37 +1,33 @@
+version: "2"
 linters:
   enable:
-    - errcheck
-    - govet
-    - ineffassign
-    - staticcheck
-    - unused
+    - revive
     - bodyclose
-    - noctx
     - contextcheck
-    - gocritic
-    - gocyclo
-    - gocognit
-    - nakedret
-    - prealloc
-    - unconvert
-    - wastedassign
-    - intrange
-    - perfsprint
-    - usestdlibvars
-    - musttag
     - errname
     - errorlint
-    - nilerr
-    - thelper
-    - usetesting
-    - testableexamples
-    - tparallel
-    - whitespace
-    - nolintlint
-    - predeclared
+    - gocognit
+    - gocritic
+    - gocyclo
     - goprintffuncname
-    - wsl
-
+    - intrange
+    - musttag
+    - nakedret
+    - nilerr
+    - noctx
+    - nolintlint
+    - perfsprint
+    - prealloc
+    - predeclared
+    - testableexamples
+    - thelper
+    - tparallel
+    - unconvert
+    - usestdlibvars
+    - usetesting
+    - wastedassign
+    - whitespace
+    - wsl_v5
   settings:
     gocritic:
       enabled-tags:
@@ -46,19 +42,40 @@ linters:
       min-complexity: 15
     nakedret:
       max-func-lines: 10
-    wsl:
-      strict-append: true
-      allow-assign-and-anything: false
-      allow-cuddle-declarations: false
-      allow-separated-leading-comment: false
-      force-err-cuddling: true
-      force-case-trailing-whitespace: false
-
-issues:
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - bodyclose
-        - noctx
-        - contextcheck
-        - usetesting
+    wsl_v5:
+      allow-first-in-block: true
+      allow-whole-block: false
+      branch-max-lines: 2
+      enable:
+        - err
+    govet:
+      enable:
+        - shadow
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - bodyclose
+          - contextcheck
+          - noctx
+          - usetesting
+        path: _test\.go
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

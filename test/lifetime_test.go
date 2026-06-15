@@ -16,10 +16,10 @@ func TestLifetime(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if resp.Resource == nil || resp.Resource.LifetimeDuration == nil {
+	if resp.Resource == nil || resp.Resource.Duration == nil {
 		t.Error("expected lifetimeDuration")
-	} else if resp.Resource.LifetimeDuration.TimeUnit != "MONTHS" {
-		t.Errorf("unexpected timeUnit: %s", resp.Resource.LifetimeDuration.TimeUnit)
+	} else if resp.Resource.Duration.TimeUnit != "MONTHS" {
+		t.Errorf("unexpected timeUnit: %s", resp.Resource.Duration.TimeUnit)
 	}
 
 	info := resp.GetReqInfo()

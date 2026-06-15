@@ -24,9 +24,10 @@ func retryOnRateLimit(t *testing.T, fn func() error) {
 		}
 
 		var ke models.KotError
-		if errors.As(err, &ke) && ke.HttpStatus == http.StatusTooManyRequests {
-			t.Logf("rate limited, waiting %ds...", ke.Info.RateLimit.Reset)
-			time.Sleep(time.Duration(ke.Info.RateLimit.Reset)*time.Second + 100*time.Millisecond)
+		if errors.As(err, &ke) && ke.HTTPStatus == http.StatusTooManyRequests {
+			t.Logf("rate limited, waiting %ds...", ke.Info.Reset)
+			time.Sleep(time.Duration(ke.Info.Reset)*time.Second + 100*time.Millisecond)
+
 			continue
 		}
 
@@ -45,10 +46,6 @@ func asKotError(err error, out *models.KotError) bool {
 	return false
 }
 
-func isRunningLocally() bool {
-	return os.Getenv("KS_CLIENT_ID") == "" || os.Getenv("KS_CLIENT_SECRET") == "" || os.Getenv("KS_SERVER_URL") == ""
-}
-
 func setupTestClient(t requireTestT, registers ...func(*http.ServeMux)) client.Client {
 	t.Helper()
 
@@ -60,7 +57,7 @@ func setupTestClient(t requireTestT, registers ...func(*http.ServeMux)) client.C
 	if clientID != "" && clientSecret != "" && serverURL != "" {
 		ctx := context.Background()
 		conf := ksOpen.Config{
-			ServerUrl:    serverURL,
+			ServerURL:    serverURL,
 			ClientID:     clientID,
 			ClientSecret: clientSecret,
 		}
@@ -85,7 +82,7 @@ func setupTestClient(t requireTestT, registers ...func(*http.ServeMux)) client.C
 	srv := handlers.NewServer(registers...)
 	t.Cleanup(srv.Close)
 
-	return client.Client{Client: srv.Client(), BaseUrl: srv.URL}
+	return client.Client{Client: srv.Client(), BaseURL: srv.URL}
 }
 
 type requireTestT interface {

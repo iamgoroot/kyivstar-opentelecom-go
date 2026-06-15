@@ -75,9 +75,9 @@ func (s service) ChangeStatus(ctx context.Context, promoUUID, status string) (Pr
 	return resp, err
 }
 
-func (s service) GetStatistics(ctx context.Context, promoUUID string) (PromoStat, error) {
+func (s service) GetStatistics(ctx context.Context, promoUUID string) (Stat, error) {
 	endpointPath := path.Join(endpointContextPath, promoUUID, "statistics")
-	resp, info, err := client.Get[PromoStat](ctx, s.client, endpointPath, nil)
+	resp, info, err := client.Get[Stat](ctx, s.client, endpointPath, nil)
 	resp.ReqInfoGetter = info
 
 	return resp, err

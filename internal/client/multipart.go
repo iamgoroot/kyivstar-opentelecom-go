@@ -11,10 +11,11 @@ import (
 	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
 )
 
-func PostMultipart[Resp any](ctx context.Context, r Client, url, fieldName, fileName string, file io.Reader) (Resp, models.ReqInfo, error) {
-	url = fmt.Sprintf("%s/rest/%s", r.BaseUrl, url)
+func PostMultipart[Resp any](ctx context.Context, r Client, path, fieldName, fileName string, file io.Reader) (Resp, models.ReqInfo, error) {
+	path = fmt.Sprintf("%s/rest/%s", r.BaseURL, path)
 
 	var buf bytes.Buffer
+
 	mw := multipart.NewWriter(&buf)
 
 	fw, err := mw.CreateFormFile(fieldName, fileName)
@@ -35,7 +36,7 @@ func PostMultipart[Resp any](ctx context.Context, r Client, url, fieldName, file
 		return resp, models.ReqInfo{}, err
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, &buf)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, path, &buf)
 	if err != nil {
 		var resp Resp
 		return resp, models.ReqInfo{}, err

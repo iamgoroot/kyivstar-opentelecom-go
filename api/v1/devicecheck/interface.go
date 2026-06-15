@@ -7,10 +7,10 @@ import (
 )
 
 type Service interface {
-	Check(ctx context.Context, phoneNumber string) (CheckRespWithResource, error)
-	CheckWithImei(ctx context.Context, phoneNumber, imei string, daysPeriod int) (CheckRespWithResource, error)
+	Check(ctx context.Context, phoneNumber, imei string) (CheckRespWithResource, error)
+	CheckWithImei(ctx context.Context, phoneNumber string, daysPeriod int) (CheckRespWithResource, error)
 }
 
-func NewService(client client.Client) Service {
-	return &service{client: client}
+func NewService(c client.Client) Service {
+	return &service{client: c}
 }

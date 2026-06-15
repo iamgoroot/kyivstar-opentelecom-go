@@ -10,11 +10,15 @@ import (
 
 func TestDeviceCheck(t *testing.T) {
 	svc := devicecheck.NewService(setupTestClient(t, handlers.RegisterDeviceCheck))
-	var resp devicecheck.CheckRespWithResource
+
+	var (
+		resp devicecheck.CheckRespWithResource
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
-		resp, err = svc.Check(context.Background(), "380670170200")
+		resp, err = svc.Check(context.Background(), "380670170200", "123456789012345")
+
 		return err
 	})
 
@@ -30,11 +34,15 @@ func TestDeviceCheck(t *testing.T) {
 
 func TestDeviceCheckWithImei(t *testing.T) {
 	svc := devicecheck.NewService(setupTestClient(t, handlers.RegisterDeviceCheck))
-	var resp devicecheck.CheckRespWithResource
+
+	var (
+		resp devicecheck.CheckRespWithResource
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
-		resp, err = svc.CheckWithImei(context.Background(), "380670170200", "123456789012345", 30)
+		resp, err = svc.CheckWithImei(context.Background(), "380670170200", 30)
+
 		return err
 	})
 

@@ -3,7 +3,7 @@ package handlers
 import "net/http"
 
 func RegisterMultichannel(mux *http.ServeMux) {
-	mux.HandleFunc("POST /rest/v1/messaging/multichannel", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("POST /rest/v1/messaging/multichannel", func(w http.ResponseWriter, _ *http.Request) {
 		writeJSON(w, map[string]string{
 			"multiMsgId": "6badca00-2e05-42df-b7f1-4a5642e38af8",
 		})

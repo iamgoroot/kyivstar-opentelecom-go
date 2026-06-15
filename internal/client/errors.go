@@ -16,7 +16,7 @@ func resolveErr(resp *http.Response) error {
 		return err
 	}
 
-	kotError.HttpStatus = resp.StatusCode
+	kotError.HTTPStatus = resp.StatusCode
 	kotError.Info = parseHeaders(resp)
 
 	switch resp.StatusCode {

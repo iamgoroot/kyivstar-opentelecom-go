@@ -17,9 +17,9 @@ type Service interface {
 	AddAudience(ctx context.Context, promoUUID string, req AddAudienceReq) (AddAudienceResp, error)
 	AddImage(ctx context.Context, promoUUID string, fileName string, file io.Reader) (AddImageResp, error)
 	ChangeStatus(ctx context.Context, promoUUID, status string) (Promo, error)
-	GetStatistics(ctx context.Context, promoUUID string) (PromoStat, error)
+	GetStatistics(ctx context.Context, promoUUID string) (Stat, error)
 }
 
-func NewService(client client.Client) Service {
-	return &service{client: client}
+func NewService(c client.Client) Service {
+	return &service{client: c}
 }

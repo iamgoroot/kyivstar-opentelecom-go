@@ -15,7 +15,7 @@ func NewOauthClient(ctx context.Context, conf Config) (client.Client, error) {
 	authConf := &clientcredentials.Config{
 		ClientID:     conf.ClientID,
 		ClientSecret: conf.ClientSecret,
-		TokenURL:     conf.ServerUrl + "/idp/oauth2/token",
+		TokenURL:     conf.ServerURL + "/idp/oauth2/token",
 		EndpointParams: url.Values{
 			"grant_type": []string{"client_credentials"},
 		},
@@ -27,14 +27,14 @@ func NewOauthClient(ctx context.Context, conf Config) (client.Client, error) {
 		serverMode = fmt.Sprint("/", conf.ServerMode)
 	}
 
-	result, err := url.JoinPath(conf.ServerUrl, serverMode)
+	result, err := url.JoinPath(conf.ServerURL, serverMode)
 	if err != nil {
 		return client.Client{}, err
 	}
 
 	ksClient := client.Client{
 		Client:  oauthClient,
-		BaseUrl: result,
+		BaseURL: result,
 	}
 
 	return ksClient, nil

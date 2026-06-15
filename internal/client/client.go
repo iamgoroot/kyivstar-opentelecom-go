@@ -16,11 +16,11 @@ type Doer interface {
 
 type Client struct {
 	Client  Doer
-	BaseUrl string
+	BaseURL string
 }
 
 func Get[Resp any](ctx context.Context, r Client, path string, q url.Values) (Resp, models.ReqInfo, error) {
-	fullURL := composeUrl(r.BaseUrl, path, q)
+	fullURL := composeURL(r.BaseURL, path, q)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fullURL, http.NoBody)
 	if err != nil {
@@ -31,10 +31,10 @@ func Get[Resp any](ctx context.Context, r Client, path string, q url.Values) (Re
 	return do[Resp](r, req)
 }
 
-func Post[Req, Resp any](ctx context.Context, r Client, url string, q url.Values, body Req) (Resp, models.ReqInfo, error) {
-	return doWithBody[Req, Resp](ctx, r, http.MethodPost, url, q, body)
+func Post[Req, Resp any](ctx context.Context, r Client, path string, q url.Values, body Req) (Resp, models.ReqInfo, error) {
+	return doWithBody[Req, Resp](ctx, r, http.MethodPost, path, q, body)
 }
 
-func Put[Req, Resp any](ctx context.Context, r Client, url string, q url.Values, body Req) (Resp, models.ReqInfo, error) {
-	return doWithBody[Req, Resp](ctx, r, http.MethodPut, url, q, body)
+func Put[Req, Resp any](ctx context.Context, r Client, path string, q url.Values, body Req) (Resp, models.ReqInfo, error) {
+	return doWithBody[Req, Resp](ctx, r, http.MethodPut, path, q, body)
 }

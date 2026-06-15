@@ -10,10 +10,10 @@ type CheckResp struct {
 }
 
 type Resource struct {
-	LifetimeDuration *LifetimeDuration `json:"lifetimeDuration,omitempty"`
+	Duration *Duration `json:"lifetimeDuration,omitempty"`
 }
 
-type LifetimeDuration struct {
+type Duration struct {
 	From     int    `json:"from,omitempty"`
 	To       *int   `json:"to,omitempty"`
 	TimeUnit string `json:"timeUnit,omitempty"`

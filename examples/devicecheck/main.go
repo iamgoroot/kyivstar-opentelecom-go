@@ -11,7 +11,7 @@ import (
 func main() {
 	ctx := context.Background()
 	ksClient, err := ksOpen.NewOauthClient(ctx, ksOpen.Config{
-		ServerUrl:    ksOpen.Gateway,
+		ServerURL:    ksOpen.Gateway,
 		ClientID:     "your_client_id",
 		ClientSecret: "your_client_secret",
 	})
@@ -21,7 +21,7 @@ func main() {
 
 	svc := devicecheck.NewService(ksClient)
 
-	resp, err := svc.Check(ctx, "380670000200")
+	resp, err := svc.Check(ctx, "380670000200", "123456789012345")
 	if err != nil {
 		log.Fatal(err)
 	}

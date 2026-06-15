@@ -6,15 +6,15 @@ type QueryReq struct {
 	Query string `json:"query"`
 }
 
-type ProfileResp struct {
+type Resp struct {
 	models.ReqInfoGetter
-	Data        *ProfileData `json:"data,omitempty"`
-	DataPresent bool         `json:"dataPresent"`
-	Errors      []string     `json:"errors,omitempty"`
-	Extensions  interface{}  `json:"extensions,omitempty"`
+	Data        *Data       `json:"data,omitempty"`
+	DataPresent bool        `json:"dataPresent"`
+	Errors      []string    `json:"errors,omitempty"`
+	Extensions  interface{} `json:"extensions,omitempty"`
 }
 
-type ProfileData struct {
+type Data struct {
 	Profile *Profile `json:"profile,omitempty"`
 }
 

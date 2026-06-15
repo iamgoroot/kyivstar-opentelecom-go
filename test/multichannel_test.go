@@ -10,25 +10,29 @@ import (
 
 func TestMultichannelSend(t *testing.T) {
 	svc := multichannel.NewService(setupTestClient(t, handlers.RegisterMultichannel))
-	var resp multichannel.SendResp
+
+	var (
+		resp multichannel.SendResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.Send(context.Background(), multichannel.SendReq{
 			To: "380670000200",
 			SmsContent: &multichannel.SmsContent{
 				Priority:      0,
 				From:          "Kyivstar",
 				Text:          "sms text",
-				MessageTtlSec: 300,
+				MessageTTLSec: 300,
 			},
 			ViberContent: &multichannel.ViberContent{
 				Priority:      1,
 				From:          "Kyivstar",
 				Text:          "viber text",
-				MessageTtlSec: 300,
+				MessageTTLSec: 300,
 			},
 		})
+
 		return err
 	})
 
@@ -44,11 +48,15 @@ func TestMultichannelSend(t *testing.T) {
 
 func TestMultichannelCheck(t *testing.T) {
 	svc := multichannel.NewService(setupTestClient(t, handlers.RegisterMultichannel))
-	var resp multichannel.CheckResp
+
+	var (
+		resp multichannel.CheckResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.Check(context.Background(), "23e39c9a-9c8d-4090-95d5-000000001200")
+
 		return err
 	})
 

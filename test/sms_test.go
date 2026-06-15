@@ -13,15 +13,19 @@ import (
 
 func TestSMSSend(t *testing.T) {
 	svc := sms.NewService(setupTestClient(t, handlers.RegisterSMS))
-	var resp sms.SendResp
+
+	var (
+		resp sms.SendResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.Send(context.Background(), sms.SendReq{
 			From: "messagedesk",
 			To:   "380670000200",
 			Text: "Hello World!",
 		})
+
 		return err
 	})
 
@@ -37,11 +41,15 @@ func TestSMSSend(t *testing.T) {
 
 func TestSMSCheck(t *testing.T) {
 	svc := sms.NewService(setupTestClient(t, handlers.RegisterSMS))
-	var resp sms.CheckResp
+
+	var (
+		resp sms.CheckResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.Check(context.Background(), "20200000-0000-0000-0000-380670000200")
+
 		return err
 	})
 
@@ -52,16 +60,20 @@ func TestSMSCheck(t *testing.T) {
 
 func TestSMSSendBatch(t *testing.T) {
 	svc := sms.NewService(setupTestClient(t, handlers.RegisterSMS))
-	var resp sms.BatchSendResp
+
+	var (
+		resp sms.BatchSendResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.SendBatch(context.Background(), sms.BatchSendReq{
 			Data: map[string]sms.SendReq{
 				"uniqueMsgKey1": {From: "messagedesk", To: "380670000200", Text: "Hello World!"},
 				"uniqueMsgKey2": {From: "messagedesk", To: "380670000201", Text: "Hello again!"},
 			},
 		})
+
 		return err
 	})
 
@@ -76,13 +88,17 @@ func TestSMSSendBatch(t *testing.T) {
 
 func TestSMSCheckBatch(t *testing.T) {
 	svc := sms.NewService(setupTestClient(t, handlers.RegisterSMS))
-	var resp sms.BatchStatusResp
+
+	var (
+		resp sms.BatchStatusResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.CheckBatch(context.Background(), sms.BatchStatusReq{
 			Data: []string{"20200000-0000-0000-0000-380670000200"},
 		})
+
 		return err
 	})
 
@@ -100,7 +116,7 @@ func TestSMSSendError(t *testing.T) {
 	srv := handlers.NewServer(handlers.RegisterSMSErrors)
 	defer srv.Close()
 
-	svc := sms.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := sms.NewService(client.Client{Client: srv.Client(), BaseURL: srv.URL})
 
 	_, err := svc.Send(context.Background(), sms.SendReq{
 		From: "messagedesk",
@@ -124,8 +140,8 @@ func TestSMSSendError(t *testing.T) {
 		t.Errorf("expected error message in Error(): %s", kotErr.Error())
 	}
 
-	if kotErr.HttpStatus != 400 {
-		t.Errorf("unexpected httpStatus: %d", kotErr.HttpStatus)
+	if kotErr.HTTPStatus != 400 {
+		t.Errorf("unexpected httpStatus: %d", kotErr.HTTPStatus)
 	}
 }
 
@@ -133,7 +149,7 @@ func TestSMSCheckError(t *testing.T) {
 	srv := handlers.NewServer(handlers.RegisterSMSErrors)
 	defer srv.Close()
 
-	svc := sms.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := sms.NewService(client.Client{Client: srv.Client(), BaseURL: srv.URL})
 
 	_, err := svc.Check(context.Background(), "nonexistent")
 	if err == nil {
@@ -149,12 +165,12 @@ func TestSMSCheckError(t *testing.T) {
 		t.Errorf("unexpected errorCode: %d", kotErr.ErrorCode)
 	}
 
-	if kotErr.ReqId != "err-req-id" {
-		t.Errorf("unexpected reqId: %s", kotErr.ReqId)
+	if kotErr.ReqID != "err-req-id" {
+		t.Errorf("unexpected reqId: %s", kotErr.ReqID)
 	}
 
-	if kotErr.HttpStatus != 404 {
-		t.Errorf("unexpected httpStatus: %d", kotErr.HttpStatus)
+	if kotErr.HTTPStatus != 404 {
+		t.Errorf("unexpected httpStatus: %d", kotErr.HTTPStatus)
 	}
 }
 
@@ -162,7 +178,7 @@ func TestSMSSendBatchError(t *testing.T) {
 	srv := handlers.NewServer(handlers.RegisterSMSErrors)
 	defer srv.Close()
 
-	svc := sms.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := sms.NewService(client.Client{Client: srv.Client(), BaseURL: srv.URL})
 
 	_, err := svc.SendBatch(context.Background(), sms.BatchSendReq{
 		Data: map[string]sms.SendReq{"key": {From: "a", To: "b", Text: "c"}},
@@ -185,7 +201,7 @@ func TestSMSCheckBatchError(t *testing.T) {
 	srv := handlers.NewServer(handlers.RegisterSMSErrors)
 	defer srv.Close()
 
-	svc := sms.NewService(client.Client{Client: srv.Client(), BaseUrl: srv.URL})
+	svc := sms.NewService(client.Client{Client: srv.Client(), BaseURL: srv.URL})
 
 	_, err := svc.CheckBatch(context.Background(), sms.BatchStatusReq{
 		Data: []string{"unknown"},

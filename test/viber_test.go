@@ -10,15 +10,18 @@ import (
 
 func TestViberSendTransaction(t *testing.T) {
 	svc := viber.NewService(setupTestClient(t, handlers.RegisterViber))
+
 	var resp viber.SendResp
 
 	retryOnRateLimit(t, func() error {
 		var err error
+
 		resp, err = svc.SendTransaction(context.Background(), viber.TransactionReq{
 			From: "messagedesk",
 			To:   "380670000202",
 			Text: "Hello!",
 		})
+
 		return err
 	})
 
@@ -34,15 +37,18 @@ func TestViberSendTransaction(t *testing.T) {
 
 func TestViberSendPromotionText(t *testing.T) {
 	svc := viber.NewService(setupTestClient(t, handlers.RegisterViber))
+
 	var resp viber.SendResp
 
 	retryOnRateLimit(t, func() error {
 		var err error
+
 		resp, err = svc.SendPromotionText(context.Background(), viber.PromotionTextReq{
 			From: "messagedesk",
 			To:   "380670000202",
 			Text: "Hello!",
 		})
+
 		return err
 	})
 
@@ -53,15 +59,18 @@ func TestViberSendPromotionText(t *testing.T) {
 
 func TestViberSendPromotionImage(t *testing.T) {
 	svc := viber.NewService(setupTestClient(t, handlers.RegisterViber))
+
 	var resp viber.SendResp
 
 	retryOnRateLimit(t, func() error {
 		var err error
+
 		resp, err = svc.SendPromotionImage(context.Background(), viber.PromotionImageReq{
 			From:            "messagedesk",
 			To:              "380672000202",
 			ContentExtended: viber.ContentExtendedImg{Img: "https://example.com/img.png"},
 		})
+
 		return err
 	})
 
@@ -72,16 +81,19 @@ func TestViberSendPromotionImage(t *testing.T) {
 
 func TestViberSendPromotionAction(t *testing.T) {
 	svc := viber.NewService(setupTestClient(t, handlers.RegisterViber))
+
 	var resp viber.SendResp
 
 	retryOnRateLimit(t, func() error {
 		var err error
+
 		resp, err = svc.SendPromotionAction(context.Background(), viber.PromotionActionReq{
 			From:            "messagedesk",
 			To:              "380672000202",
 			Text:            "Hello!",
 			ContentExtended: viber.ContentExtendedAction{Img: "https://example.com/img.png", Caption: "Click", Action: "https://example.com"},
 		})
+
 		return err
 	})
 
@@ -92,11 +104,14 @@ func TestViberSendPromotionAction(t *testing.T) {
 
 func TestViberCheck(t *testing.T) {
 	svc := viber.NewService(setupTestClient(t, handlers.RegisterViber))
+
 	var resp viber.CheckResp
 
 	retryOnRateLimit(t, func() error {
 		var err error
+
 		resp, err = svc.Check(context.Background(), "20200000-0000-0000-0000-380670000200")
+
 		return err
 	})
 

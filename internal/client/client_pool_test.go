@@ -34,10 +34,11 @@ func TestBufferPoolUnderMemoryPressure(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockDoer := NewMockDoer(ctrl)
-	c := Client{Client: mockDoer, BaseUrl: "http://test"}
+	c := Client{Client: mockDoer, BaseURL: "http://test"}
 
 	mockDoer.EXPECT().Do(gomock.Any()).DoAndReturn(func(req *http.Request) (*http.Response, error) {
 		body, _ := io.ReadAll(req.Body)
+
 		return &http.Response{
 			StatusCode: http.StatusOK,
 			Body:       io.NopCloser(bytes.NewReader(body)),
@@ -46,11 +47,8 @@ func TestBufferPoolUnderMemoryPressure(t *testing.T) {
 
 	for i := range 500 {
 		data := strings.Repeat("1234567890", i%100)
-		payload := poolPayload{Data: data}
-		resp, _, err := Post[poolPayload, poolPayload](
-			context.Background(), c, "test", nil, payload,
-		)
 
+		resp, _, err := Post[poolPayload, poolPayload](context.Background(), c, "test", nil, poolPayload{Data: data})
 		if err != nil {
 			t.Fatalf("iteration %d payload %q: %v", i, data[:min(10, len(data))], err)
 		}
@@ -75,10 +73,11 @@ func TestConcurrentPoolRequests(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockDoer := NewMockDoer(ctrl)
-	c := Client{Client: mockDoer, BaseUrl: "http://test"}
+	c := Client{Client: mockDoer, BaseURL: "http://test"}
 
 	mockDoer.EXPECT().Do(gomock.Any()).DoAndReturn(func(req *http.Request) (*http.Response, error) {
 		body, _ := io.ReadAll(req.Body)
+
 		return &http.Response{
 			StatusCode: http.StatusOK,
 			Body:       io.NopCloser(bytes.NewReader(body)),

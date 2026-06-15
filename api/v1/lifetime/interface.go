@@ -10,6 +10,6 @@ type Service interface {
 	Check(ctx context.Context, phoneNumber string) (CheckResp, error)
 }
 
-func NewService(client client.Client) Service {
-	return &service{client: client}
+func NewService(c client.Client) Service {
+	return &service{client: c}
 }

@@ -7,12 +7,12 @@ import (
 )
 
 type Service interface {
-	SendText(ctx context.Context, req RcsTextReq) (SendResp, error)
-	SendSuggestion(ctx context.Context, req RcsSuggestionReq) (SendResp, error)
-	SendRichCard(ctx context.Context, req RcsRichCardReq) (SendResp, error)
+	SendText(ctx context.Context, req TextReq) (SendResp, error)
+	SendSuggestion(ctx context.Context, req SuggestionReq) (SendResp, error)
+	SendRichCard(ctx context.Context, req RichCardReq) (SendResp, error)
 	Check(ctx context.Context, msgID string) (CheckResp, error)
 }
 
-func NewService(client client.Client) Service {
-	return &service{client: client}
+func NewService(c client.Client) Service {
+	return &service{client: c}
 }

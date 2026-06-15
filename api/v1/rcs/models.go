@@ -2,26 +2,26 @@ package rcs
 
 import "github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
 
-type RcsTextReq struct {
+type TextReq struct {
 	From               string      `json:"from"`
 	To                 string      `json:"to"`
-	MessageTtlSec      *int        `json:"messageTtlSec,omitempty"`
+	MessageTTLSec      *int        `json:"messageTtlSec,omitempty"`
 	CallbackNumber     *string     `json:"callbackNumber,omitempty"`
 	ContentExtendedRcs ContentText `json:"contentExtendedRcs"`
 }
 
-type RcsSuggestionReq struct {
+type SuggestionReq struct {
 	From               string            `json:"from"`
 	To                 string            `json:"to"`
-	MessageTtlSec      *int              `json:"messageTtlSec,omitempty"`
+	MessageTTLSec      *int              `json:"messageTtlSec,omitempty"`
 	CallbackNumber     *string           `json:"callbackNumber,omitempty"`
 	ContentExtendedRcs ContentSuggestion `json:"contentExtendedRcs"`
 }
 
-type RcsRichCardReq struct {
+type RichCardReq struct {
 	From               string          `json:"from"`
 	To                 string          `json:"to"`
-	MessageTtlSec      *int            `json:"messageTtlSec,omitempty"`
+	MessageTTLSec      *int            `json:"messageTtlSec,omitempty"`
 	CallbackNumber     *string         `json:"callbackNumber,omitempty"`
 	ContentExtendedRcs ContentRichCard `json:"contentExtendedRcs"`
 }
@@ -54,14 +54,14 @@ type CardContent struct {
 
 type Media struct {
 	Height       string `json:"height,omitempty"`
-	ThumbnailUrl string `json:"thumbnailUrl,omitempty"`
-	FileUrl      string `json:"fileUrl,omitempty"`
+	ThumbnailURL string `json:"thumbnailUrl,omitempty"`
+	FileURL      string `json:"fileUrl,omitempty"`
 }
 
 type Suggestion struct {
 	Type          string `json:"type,omitempty"`
 	Text          string `json:"text,omitempty"`
-	OpenUrlAction string `json:"openUrlAction,omitempty"`
+	OpenURLAction string `json:"openUrlAction,omitempty"`
 }
 
 type SendResp struct {

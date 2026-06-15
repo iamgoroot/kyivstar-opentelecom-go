@@ -10,15 +10,19 @@ import (
 
 func TestRCSSendText(t *testing.T) {
 	svc := rcs.NewService(setupTestClient(t, handlers.RegisterRCS))
-	var resp rcs.SendResp
+
+	var (
+		resp rcs.SendResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
-		resp, err = svc.SendText(context.Background(), rcs.RcsTextReq{
+		resp, err = svc.SendText(context.Background(), rcs.TextReq{
 			From:               "messagedesk",
 			To:                 "380670000200",
 			ContentExtendedRcs: rcs.ContentText{Text: "Hello"},
 		})
+
 		return err
 	})
 
@@ -34,18 +38,22 @@ func TestRCSSendText(t *testing.T) {
 
 func TestRCSSendSuggestion(t *testing.T) {
 	svc := rcs.NewService(setupTestClient(t, handlers.RegisterRCS))
-	var resp rcs.SendResp
+
+	var (
+		resp rcs.SendResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
-		resp, err = svc.SendSuggestion(context.Background(), rcs.RcsSuggestionReq{
+		resp, err = svc.SendSuggestion(context.Background(), rcs.SuggestionReq{
 			From: "messagedesk",
 			To:   "380670000200",
 			ContentExtendedRcs: rcs.ContentSuggestion{
 				Text:        "Hello",
-				Suggestions: []rcs.Suggestion{{Type: "action", Text: "Go", OpenUrlAction: "https://example.com"}},
+				Suggestions: []rcs.Suggestion{{Type: "action", Text: "Go", OpenURLAction: "https://example.com"}},
 			},
 		})
+
 		return err
 	})
 
@@ -56,11 +64,14 @@ func TestRCSSendSuggestion(t *testing.T) {
 
 func TestRCSSendRichCard(t *testing.T) {
 	svc := rcs.NewService(setupTestClient(t, handlers.RegisterRCS))
-	var resp rcs.SendResp
+
+	var (
+		resp rcs.SendResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
-		resp, err = svc.SendRichCard(context.Background(), rcs.RcsRichCardReq{
+		resp, err = svc.SendRichCard(context.Background(), rcs.RichCardReq{
 			From: "messagedesk",
 			To:   "380670000200",
 			ContentExtendedRcs: rcs.ContentRichCard{
@@ -70,13 +81,14 @@ func TestRCSSendRichCard(t *testing.T) {
 					CardContent: &rcs.CardContent{
 						Title: "Test",
 						Media: &rcs.Media{
-							ThumbnailUrl: "https://example.com/thumb.png",
-							FileUrl:      "https://example.com/file.png",
+							ThumbnailURL: "https://example.com/thumb.png",
+							FileURL:      "https://example.com/file.png",
 						},
 					},
 				},
 			},
 		})
+
 		return err
 	})
 
@@ -87,11 +99,15 @@ func TestRCSSendRichCard(t *testing.T) {
 
 func TestRCSCheck(t *testing.T) {
 	svc := rcs.NewService(setupTestClient(t, handlers.RegisterRCS))
-	var resp rcs.CheckResp
+
+	var (
+		resp rcs.CheckResp
+		err  error
+	)
 
 	retryOnRateLimit(t, func() error {
-		var err error
 		resp, err = svc.Check(context.Background(), "20200000-0000-0000-0000-380670000200")
+
 		return err
 	})
 
