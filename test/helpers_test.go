@@ -49,29 +49,19 @@ func asKotError(err error, out *models.KotError) bool {
 func setupTestClient(t requireTestT, registers ...func(*http.ServeMux)) client.Client {
 	t.Helper()
 
-	clientID := os.Getenv("KS_CLIENT_ID")
-	clientSecret := os.Getenv("KS_CLIENT_SECRET")
-	serverURL := os.Getenv("KS_SERVER_URL")
-	serverMode := os.Getenv("KS_SERVER_MODE")
+	ctx := context.Background()
 
-	if clientID != "" && clientSecret != "" && serverURL != "" {
-		ctx := context.Background()
-		conf := ksOpen.Config{
-			ServerURL:    serverURL,
-			ClientID:     clientID,
-			ClientSecret: clientSecret,
-		}
+	conf := ksOpen.Config{
+		ServerURL:    os.Getenv("KS_SERVER_URL"),
+		ClientID:     os.Getenv("KS_CLIENT_ID"),
+		ClientSecret: os.Getenv("KS_CLIENT_SECRET"),
+	}
+	if err := conf.LoadEnv(); err != nil {
+		t.Fatalf("LoadEnv: %v", err)
+	}
 
-		switch serverMode {
-		case "mock":
-			conf.ServerMode = ksOpen.ServerModeMock
-		case "sandbox":
-			conf.ServerMode = ksOpen.ServerModeSandbox
-		case "live", "":
-			conf.ServerMode = ksOpen.ServerModeLive
-		}
-
-		ksClient, err := ksOpen.NewOauthClient(ctx, conf)
+	if conf.ClientID != "" && conf.ClientSecret != "" && conf.ServerURL != "" {
+		ksClient, err := ksOpen.NewOauthClient(ctx, &conf)
 		if err != nil {
 			t.Fatalf("NewOauthClient: %v", err)
 		}

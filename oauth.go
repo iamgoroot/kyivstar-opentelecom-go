@@ -11,7 +11,7 @@ import (
 	"github.com/iamgoroot/kyivstar-opentelecom-go/internal/client"
 )
 
-func NewOauthClient(ctx context.Context, conf Config) (client.Client, error) {
+func NewOauthClient(ctx context.Context, conf *Config) (client.Client, error) {
 	authConf := &clientcredentials.Config{
 		ClientID:     conf.ClientID,
 		ClientSecret: conf.ClientSecret,

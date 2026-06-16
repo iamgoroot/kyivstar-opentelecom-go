@@ -10,11 +10,12 @@ import (
 
 func main() {
 	ctx := context.Background()
-	ksClient, err := ksOpen.NewOauthClient(ctx, ksOpen.Config{
-		ServerURL:    ksOpen.Gateway,
-		ClientID:     "your_client_id",
-		ClientSecret: "your_client_secret",
-	})
+	var conf ksOpen.Config
+	if err := conf.LoadEnv(); err != nil {
+		log.Fatal(err)
+	}
+
+	ksClient, err := ksOpen.NewOauthClient(ctx, &conf)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -22,7 +23,7 @@ func main() {
 	svc := otp.NewService(ksClient)
 
 	sendResp, err := svc.Send(ctx, otp.SendReq{
-		To: "380670000200",
+		To: "380677770200",
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -30,8 +31,8 @@ func main() {
 	log.Printf("OTP sent: reqID=%s", sendResp.ReqID)
 
 	checkResp, err := svc.Check(ctx, otp.CheckReq{
-		SubscriberID:   "380670000200",
-		ValidationCode: "123456",
+		SubscriberID:   "380677770200",
+		ValidationCode: "4545",
 	})
 	if err != nil {
 		log.Fatal(err)

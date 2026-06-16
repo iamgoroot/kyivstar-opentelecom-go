@@ -13,24 +13,25 @@ Get device information for a subscriber.
 ## Standalone Usage
 
 ```go
-import "github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/devicecheck"
+import (
+	ksOpen "github.com/iamgoroot/kyivstar-opentelecom-go"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/devicecheck"
+)
 
-ksClient, _ := ksOpen.NewOauthClient(ctx, conf)
+ksClient, _ := ksOpen.NewOauthClient(ctx, &conf)
 svc := devicecheck.NewService(ksClient)
 
 // Check with IMEI
 resp, err := svc.Check(ctx, "380670000200", "123456789012345")
 
 // Check with days period
-resp, err := svc.CheckWithImei(ctx, "380670000200", 30)
+_, err = svc.CheckWithImei(ctx, "380670000200", 30)
 ```
 
 ## Aggregated Usage (V1Client)
 
 ```go
-ksClient, _ := ksOpen.NewV1Client(ctx, conf)
+ksClient, _ := ksOpen.NewV1Client(ctx, &conf)
 ksClient.DeviceCheck.Check(ctx, phone, imei)
 ksClient.DeviceCheck.CheckWithImei(ctx, phone, 30)
 ```
-
-Each product can be used standalone via `product.NewService(client.Client{...})` or through the aggregated `V1Client` which bundles all products together.

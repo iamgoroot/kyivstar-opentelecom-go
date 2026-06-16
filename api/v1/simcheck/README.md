@@ -13,7 +13,7 @@ Check if a subscriber's SIM card has been recently changed (anti-fraud).
 ```go
 import "github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/simcheck"
 
-ksClient, _ := ksOpen.NewOauthClient(ctx, conf)
+ksClient, _ := ksOpen.NewOauthClient(ctx, &conf)
 svc := simcheck.NewService(ksClient)
 resp, err := svc.Check(ctx, "380670000200", 7)
 ```
@@ -21,8 +21,6 @@ resp, err := svc.Check(ctx, "380670000200", 7)
 ## Aggregated Usage (V1Client)
 
 ```go
-ksClient, _ := ksOpen.NewV1Client(ctx, conf)
+ksClient, _ := ksOpen.NewV1Client(ctx, &conf)
 ksClient.SimCheck.Check(ctx, phone, period)
 ```
-
-Each product can be used standalone via `product.NewService(client.Client{...})` or through the aggregated `V1Client` which bundles all products together.

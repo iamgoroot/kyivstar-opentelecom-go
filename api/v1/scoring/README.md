@@ -13,7 +13,7 @@ Perform financial scoring of a subscriber.
 ```go
 import "github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/scoring"
 
-ksClient, _ := ksOpen.NewOauthClient(ctx, conf)
+ksClient, _ := ksOpen.NewOauthClient(ctx, &conf)
 svc := scoring.NewService(ksClient)
 resp, err := svc.Check(ctx, "380670000200", 1)
 ```
@@ -21,8 +21,6 @@ resp, err := svc.Check(ctx, "380670000200", 1)
 ## Aggregated Usage (V1Client)
 
 ```go
-ksClient, _ := ksOpen.NewV1Client(ctx, conf)
+ksClient, _ := ksOpen.NewV1Client(ctx, &conf)
 ksClient.Scoring.Check(ctx, phone, formula)
 ```
-
-Each product can be used standalone via `product.NewService(client.Client{...})` or through the aggregated `V1Client` which bundles all products together.

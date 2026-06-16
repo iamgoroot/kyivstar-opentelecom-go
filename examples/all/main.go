@@ -9,16 +9,14 @@ import (
 )
 
 func main() {
-	conf := ksOpen.Config{
-		ServerURL:    ksOpen.Gateway,
-		ServerMode:   ksOpen.ServerModeMock,
-		ClientID:     "your_client_id",
-		ClientSecret: "your_client_secret",
+	var conf ksOpen.Config
+	if err := conf.LoadEnv(); err != nil {
+		log.Fatal(err)
 	}
 
 	ctx := context.Background()
 
-	ksClient, err := ksOpen.NewV1Client(ctx, conf)
+	ksClient, err := ksOpen.NewV1Client(ctx, &conf)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,5 +38,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("Check", check.Status, err)
+	log.Println("Checking status. Status:", check.Status, err)
 }

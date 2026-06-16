@@ -1,6 +1,6 @@
 # Kyivstar Open Telecom API Client for Go
 
-Unofficial Go client SDK for the [Kyivstar Open Telecom API](https://api-gateway.kyivstar.ua). Provides full coverage of all API products — SMS, RCS, Viber, promo campaigns, multichannel messaging, SIM security checks, financial scoring, OTP verification, and more.
+Unofficial Go client SDK for the [Kyivstar Open Telecom API](https://api-gateway.kyivstar.ua). Provides Golang native client for all Kyivstar API products — SMS, RCS, Viber, promo campaigns, multichannel messaging, SIM security checks, financial scoring, OTP verification, and more.
 
 ```go
 import ksOpen "github.com/iamgoroot/kyivstar-opentelecom-go"
@@ -42,15 +42,18 @@ import (
 
 func main() {
 	conf := ksOpen.Config{
-		ServerUrl:    ksOpen.Gateway,
+		ServerURL:    ksOpen.Gateway,
 		ServerMode:   ksOpen.ServerModeMock,
 		ClientID:     "your_client_id",
 		ClientSecret: "your_client_secret",
 	}
+	if err := conf.LoadEnv(); err != nil {
+		log.Fatal(err)
+	}
 
 	ctx := context.Background()
 
-	ksClient, err := ksOpen.NewV1Client(ctx, conf)
+	ksClient, err := ksOpen.NewV1Client(ctx, &conf)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -93,12 +96,17 @@ import (
 func main() {
 	ctx := context.Background()
 
-	ksClient, err := ksOpen.NewOauthClient(ctx, ksOpen.Config{
-		ServerUrl:    ksOpen.Gateway,
+	conf := ksOpen.Config{
+		ServerURL:    ksOpen.Gateway,
 		ServerMode:   ksOpen.ServerModeMock,
 		ClientID:     "your_client_id",
 		ClientSecret: "your_client_secret",
-	})
+	}
+	if err := conf.LoadEnv(); err != nil {
+		log.Fatal(err)
+	}
+
+	ksClient, err := ksOpen.NewOauthClient(ctx, &conf)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -125,21 +133,21 @@ func main() {
 
 ## Available API products
 
-| Product | Package | Methods |
-|---------|---------|---------|
-| SMS (programmable) | [`api/v1/sms`](api/v1/sms/README.md) | `Send`, `SendBatch`, `Check`, `CheckBatch` |
-| RCS messaging | [`api/v1/rcs`](api/v1/rcs/README.md) | `SendText`, `SendSuggestion`, `SendRichCard`, `Check` |
-| Viber messaging | [`api/v1/viber`](api/v1/viber/README.md) | `SendTransaction`, `SendPromotionText`, `SendPromotionImage`, `SendPromotionAction`, `Check` |
-| Promo campaigns | [`api/v1/promo`](api/v1/promo/README.md) | `CreateSMS`, `CreateViber`, `CreateRCS`, `List`, `Get`, `AddAudience`, `AddImage`, `ChangeStatus`, `GetStatistics` |
-| Multichannel messaging | [`api/v1/multichannel`](api/v1/multichannel/README.md) | `Send`, `Check` |
-| SIM check protection | [`api/v1/simcheck`](api/v1/simcheck/README.md) | `Check(phone, period)` |
-| SIM count check | [`api/v1/simcount`](api/v1/simcount/README.md) | `Check(phone, days)` |
-| Financial scoring | [`api/v1/scoring`](api/v1/scoring/README.md) | `Check(phone, formula)` |
-| Lifetime check | [`api/v1/lifetime`](api/v1/lifetime/README.md) | `Check(phone)` |
-| Device check | [`api/v1/devicecheck`](api/v1/devicecheck/README.md) | `Check(phone)`, `CheckWithImei(phone, imei, days)` |
-| SMS OTP verification | [`api/v1/otp`](api/v1/otp/README.md) | `Send`, `Check` |
-| Flash call OTP | [`api/v1/flashcall`](api/v1/flashcall/README.md) | `Create`, `Check` |
-| Profile API | [`api/v1/profile`](api/v1/profile/README.md) | `Get(query)` |
+| Product | Package | Docs | Methods |
+|---------|---------|------|---------|
+| SMS (programmable) | `api/v1/sms` | [README](api/v1/sms/README.md) | `Send`, `SendBatch`, `Check`, `CheckBatch` |
+| RCS messaging | `api/v1/rcs` | [README](api/v1/rcs/README.md) | `SendText`, `SendSuggestion`, `SendRichCard`, `Check` |
+| Viber messaging | `api/v1/viber` | [README](api/v1/viber/README.md) | `SendTransaction`, `SendPromotionText`, `SendPromotionImage`, `SendPromotionAction`, `Check` |
+| Promo campaigns | `api/v1/promo` | [README](api/v1/promo/README.md) | `CreateSMS`, `CreateViber`, `CreateRCS`, `List`, `Get`, `AddAudience`, `AddImage`, `ChangeStatus`, `GetStatistics` |
+| Multichannel messaging | `api/v1/multichannel` | [README](api/v1/multichannel/README.md) | `Send`, `Check` |
+| SIM check protection | `api/v1/simcheck` | [README](api/v1/simcheck/README.md) | `Check(phone, period)` |
+| SIM count check | `api/v1/simcount` | [README](api/v1/simcount/README.md) | `Check(phone, days)` |
+| Financial scoring | `api/v1/scoring` | [README](api/v1/scoring/README.md) | `Check(phone, formula)` |
+| Lifetime check | `api/v1/lifetime` | [README](api/v1/lifetime/README.md) | `Check(phone)` |
+| Device check | `api/v1/devicecheck` | [README](api/v1/devicecheck/README.md) | `Check(phone, imei)`, `CheckWithImei(phone, days)` |
+| SMS OTP verification | `api/v1/otp` | [README](api/v1/otp/README.md) | `Send`, `Check` |
+| Flash call OTP | `api/v1/flashcall` | [README](api/v1/flashcall/README.md) | `Create`, `Check` |
+| Profile API | `api/v1/profile` | [README](api/v1/profile/README.md) | `Get(query)` |
 
 ## Error handling
 
@@ -176,11 +184,38 @@ https://api-gateway.kyivstar.ua/mock/rest/v1/…      ← Mock
 https://api-gateway.kyivstar.ua/sandbox/rest/v1/…   ← Sandbox
 ```
 
+## Loading configuration
+
+The `Config` struct provides two helper methods:
+
+### `LoadEnv()`
+
+Reads `KS_CLIENT_ID`, `KS_CLIENT_SECRET`, `KS_SERVER_URL`, and `KS_SERVER_MODE` from the environment. Only non-empty values override the current config:
+
+```go
+conf := ksOpen.Config{
+    ServerURL:  ksOpen.Gateway,
+    ClientID:   "your_client_id",
+    ClientSecret: "your_client_secret",
+}
+if err := conf.LoadEnv(); err != nil {
+    log.Fatal(err)
+}
+```
+
+### `LoadJSON(r io.Reader)`
+
+Decodes JSON into the config. JSON keys match the struct tag names (`serverUrl`, `clientId`, `clientSecret`, `serverMode`):
+
+```go
+f, _ := os.Open("config.json")
+conf.LoadJSON(f)
+```
+
 ## Documentation
 
 - [Official API documentation](https://api-gateway.kyivstar.ua)
 - [OpenAPI specification](https://api-gateway.kyivstar.ua/api/public/openapi.yaml)
-- Product-specific README files are in each package under `api/v1/<product>/`
 
 ## Examples
 
@@ -203,14 +238,3 @@ Contributions are welcome! See [CLAUDE.md](./CLAUDE.md) for the contributor guid
 ## License
 
 MIT — see [LICENSE](./LICENSE).
-
-## Suggestions for further README improvements
-
-1. **Quick-start guide** — a step-by-step tutorial that walks through registering on the portal, obtaining credentials, and making the first API call in under 5 minutes.
-2. **FAQ section** — common issues: rate limits, alpha-name registration, unsupported phone number formats, TTL behaviour, batch size limits.
-3. **Webhook handling** — although webhooks are server-side and not part of this client, a short section explaining how to validate and parse incoming webhook payloads would help users set up the receiving end.
-4. **Comparison table** — when to use V1Client vs standalone services vs direct `client.Client`.
-5. **Advanced auth section** — token refresh strategies, handling 401 responses with automatic retry, custom `http.Client` injection (e.g. with tracing or custom timeouts).
-6. **Migration guide** — if the upstream API introduces breaking changes, document how to migrate between client versions.
-7. **Performance section** — connection pooling, batch size recommendations, concurrency patterns.
-8. **SDK reference** — auto-generated Go doc links (pkg.go.dev) once the module is published.

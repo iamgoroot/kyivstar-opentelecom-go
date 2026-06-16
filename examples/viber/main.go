@@ -10,11 +10,12 @@ import (
 
 func main() {
 	ctx := context.Background()
-	ksClient, err := ksOpen.NewOauthClient(ctx, ksOpen.Config{
-		ServerURL:    ksOpen.Gateway,
-		ClientID:     "your_client_id",
-		ClientSecret: "your_client_secret",
-	})
+	var conf ksOpen.Config
+	if err := conf.LoadEnv(); err != nil {
+		log.Fatal(err)
+	}
+
+	ksClient, err := ksOpen.NewOauthClient(ctx, &conf)
 	if err != nil {
 		log.Fatal(err)
 	}

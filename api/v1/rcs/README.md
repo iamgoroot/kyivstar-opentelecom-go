@@ -16,16 +16,14 @@ Send and check Rich Communication Services messages.
 ```go
 import "github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/rcs"
 
-ksClient, _ := ksOpen.NewOauthClient(ctx, conf)
+ksClient, _ := ksOpen.NewOauthClient(ctx, &conf)
 svc := rcs.NewService(ksClient)
-resp, err := svc.SendText(ctx, rcs.RcsTextReq{From: "messagedesk", To: "380670000200", Text: "Hello!"})
+resp, err := svc.SendText(ctx, rcs.TextReq{From: "messagedesk", To: "380670000200", Text: "Hello!"})
 ```
 
 ## Aggregated Usage (V1Client)
 
 ```go
-ksClient, _ := ksOpen.NewV1Client(ctx, conf)
+ksClient, _ := ksOpen.NewV1Client(ctx, &conf)
 ksClient.RCS.SendText(ctx, req)
 ```
-
-Each product can be used standalone via `product.NewService(client.Client{...})` or through the aggregated `V1Client` which bundles all products together.

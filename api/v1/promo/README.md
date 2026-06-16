@@ -21,16 +21,14 @@ Create and manage bulk SMS, Viber, and RCS campaigns to your own subscriber list
 ```go
 import "github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/promo"
 
-ksClient, _ := ksOpen.NewOauthClient(ctx, conf)
+ksClient, _ := ksOpen.NewOauthClient(ctx, &conf)
 svc := promo.NewService(ksClient)
-p, err := svc.CreateSMS(ctx, promo.CreateSMSReq{Name: "Campaign", Message: "Hello!", Phones: []string{"380670000200"}})
+p, err := svc.CreateSMS(ctx, promo.CreateSMSReq{From: "author", Text: "Hello ${1}", CampaignType: "SMS"})
 ```
 
 ## Aggregated Usage (V1Client)
 
 ```go
-ksClient, _ := ksOpen.NewV1Client(ctx, conf)
+ksClient, _ := ksOpen.NewV1Client(ctx, &conf)
 ksClient.Promo.CreateSMS(ctx, req)
 ```
-
-Each product can be used standalone via `product.NewService(client.Client{...})` or through the aggregated `V1Client` which bundles all products together.
