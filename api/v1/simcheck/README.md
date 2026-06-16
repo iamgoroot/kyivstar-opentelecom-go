@@ -15,7 +15,7 @@ import "github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/simcheck"
 
 ksClient, _ := ksOpen.NewOauthClient(ctx, &conf)
 svc := simcheck.NewService(ksClient)
-resp, err := svc.Check(ctx, "380670000200", 7)
+resp, err := svc.Check(ctx, "380670010101", 24)
 ```
 
 ## Aggregated Usage (V1Client)

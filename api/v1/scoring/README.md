@@ -15,7 +15,7 @@ import "github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/scoring"
 
 ksClient, _ := ksOpen.NewOauthClient(ctx, &conf)
 svc := scoring.NewService(ksClient)
-resp, err := svc.Check(ctx, "380670000200", 1)
+resp, err := svc.Check(ctx, "380670010103", 5)
 ```
 
 ## Aggregated Usage (V1Client)

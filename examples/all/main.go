@@ -31,7 +31,10 @@ func main() {
 			Text: "Hello World!",
 		},
 	)
-	log.Println("Sent", sendMsgResp, err)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Sent", sendMsgResp)
 
 	check, err := ksClient.SMS.Check(ctx, sendMsgResp.MsgID)
 	if err != nil {
