@@ -1,0 +1,26 @@
+# SimCheck — Sim Check Protection
+
+Check if a subscriber's SIM card has been recently changed (anti-fraud).
+
+## Methods
+
+| Method | HTTP | Path |
+|--------|------|------|
+| `Check` | GET | `/subscribers/{phoneNumber}/sim-check-antifraud` |
+
+## Standalone Usage
+
+```go
+import "github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/simcheck"
+
+ksClient, _ := ksOpen.NewOauthClient(ctx, &conf)
+svc := simcheck.NewService(ksClient)
+resp, err := svc.Check(ctx, "380670010101", 24)
+```
+
+## Aggregated Usage (V1Client)
+
+```go
+ksClient, _ := ksOpen.NewV1Client(ctx, &conf)
+ksClient.SimCheck.Check(ctx, phone, period)
+```

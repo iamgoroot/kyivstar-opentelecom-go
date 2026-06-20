@@ -1,11 +1,7 @@
 module github.com/iamgoroot/kyivstar-opentelecom-go
 
-go 1.20
+go 1.26.0
 
-require golang.org/x/oauth2 v0.13.0
+require golang.org/x/oauth2 v0.36.0
 
-require (
-	github.com/golang/protobuf v1.5.3 // indirect
-	google.golang.org/appengine v1.6.8 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
-)
+require go.uber.org/mock v0.6.0 // indirect

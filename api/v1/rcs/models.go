@@ -1,0 +1,79 @@
+package rcs
+
+import "github.com/iamgoroot/kyivstar-opentelecom-go/internal/models"
+
+type TextReq struct {
+	From               string      `json:"from"`
+	To                 string      `json:"to"`
+	MessageTTLSec      *int        `json:"messageTtlSec,omitempty"`
+	CallbackNumber     *string     `json:"callbackNumber,omitempty"`
+	ContentExtendedRcs ContentText `json:"contentExtendedRcs"`
+}
+
+type SuggestionReq struct {
+	From               string            `json:"from"`
+	To                 string            `json:"to"`
+	MessageTTLSec      *int              `json:"messageTtlSec,omitempty"`
+	CallbackNumber     *string           `json:"callbackNumber,omitempty"`
+	ContentExtendedRcs ContentSuggestion `json:"contentExtendedRcs"`
+}
+
+type RichCardReq struct {
+	From               string          `json:"from"`
+	To                 string          `json:"to"`
+	MessageTTLSec      *int            `json:"messageTtlSec,omitempty"`
+	CallbackNumber     *string         `json:"callbackNumber,omitempty"`
+	ContentExtendedRcs ContentRichCard `json:"contentExtendedRcs"`
+}
+
+type ContentText struct {
+	Text string `json:"text"`
+}
+
+type ContentSuggestion struct {
+	Text        string       `json:"text"`
+	Suggestions []Suggestion `json:"suggestions,omitempty"`
+}
+
+type ContentRichCard struct {
+	StandaloneCard *StandaloneCard `json:"standaloneCard,omitempty"`
+}
+
+type StandaloneCard struct {
+	ThumbnailImageAlignment *string      `json:"thumbnailImageAlignment,omitempty"`
+	CardOrientation         *string      `json:"cardOrientation,omitempty"`
+	CardContent             *CardContent `json:"cardContent,omitempty"`
+}
+
+type CardContent struct {
+	Title       string       `json:"title,omitempty"`
+	Description string       `json:"description,omitempty"`
+	Media       *Media       `json:"media,omitempty"`
+	Suggestions []Suggestion `json:"suggestions,omitempty"`
+}
+
+type Media struct {
+	Height       string `json:"height,omitempty"`
+	ThumbnailURL string `json:"thumbnailUrl,omitempty"`
+	FileURL      string `json:"fileUrl,omitempty"`
+}
+
+type Suggestion struct {
+	Type          string `json:"type,omitempty"`
+	Text          string `json:"text,omitempty"`
+	OpenURLAction string `json:"openUrlAction,omitempty"`
+}
+
+type SendResp struct {
+	models.ReqInfoGetter
+	ReqID string `json:"reqId"`
+	MsgID string `json:"msgId"`
+}
+
+type CheckResp struct {
+	models.ReqInfoGetter
+	ReqID  string `json:"reqId"`
+	MsgID  string `json:"msgId"`
+	Status string `json:"status"`
+	Date   string `json:"date"`
+}

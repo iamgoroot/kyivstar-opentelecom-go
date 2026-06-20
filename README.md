@@ -1,82 +1,240 @@
 # Kyivstar Open Telecom API Client for Go
 
-This is unofficial a Go client for the Kyivstar API, which allows you to interact with the Kyivstar Open Telecom API https://api-gateway.kyivstar.ua
+Unofficial Go client SDK for the [Kyivstar Open Telecom API](https://api-gateway.kyivstar.ua). Provides Golang native client for all Kyivstar API products — SMS, RCS, Viber, promo campaigns, multichannel messaging, SIM security checks, financial scoring, OTP verification, and more.
+
+```go
+import ksOpen "github.com/iamgoroot/kyivstar-opentelecom-go"
+```
 
 ## Installation
-
-To install the Kyivstar API client, use the `go get` command:
 
 ```bash
 go get github.com/iamgoroot/kyivstar-opentelecom-go
 ```
+
 ## Before you start
 
-In order to use the API, you need to register at https://api-market.kyivstar.ua and obtain client_id and client_secret.
+1. Register at https://api-market.kyivstar.ua
+2. Obtain your `client_id` and `client_secret`
+3. Choose a server mode:
+   - `ksOpen.ServerModeMock` — fake data, no charges, no real delivery
+   - `ksOpen.ServerModeSandbox` — real data, limited to OTP-verified phone numbers, no charges
+   - `ksOpen.ServerModeLive` — production, real delivery, charged
 
 ## Usage
 
-Here's a simple example of how to use the Kyivstar API client:
+Two approaches are available:
+
+### 1. V1Client — all products, one client
+
+The `V1Client` bundles every product service into a single struct. Use it when you need multiple API products in your application.
 
 ```go
-
 package main
 
 import (
 	"context"
-	"fmt"
+	"log"
+
 	ksOpen "github.com/iamgoroot/kyivstar-opentelecom-go"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/sms"
 )
 
 func main() {
-    conf := ksOpen.Config{
-        ServerUrl:    ksOpen.Gateway,
-        ServerMode:   ksOpen.ServerModeMock,
-        ClientID:     "your_client_id",
-        ClientSecret: "your_client_secret",
-    }
-    ctx := context.Background()
-    ksClient := ksOpen.New(ctx, conf)
-    const destinationPhoneNumber = "380670000200"
-	
-    // Send SMS msg
-    sendMsgResp, err := ksClient.Send(
-        ksOpen.SmsSendReq{
-            From: "messagedesk",
-            To:   destinationPhoneNumber,
-            Text: "Hello World!",
-        })
-    fmt.Println("Sent", sendMsgResp, err)
-    
-    // Check SMS Status
-    check, err := ksClient.Check(sendMsgResp.MsgId)
-    fmt.Println("Check", check.Status, err)
-    
-    // Scoring
-    scoring, err := ksClient.Scoring(destinationPhoneNumber, 0)
-    fmt.Println("Scored:", scoring, err)
-    
-    // Verify sim
-    sim, err := ksClient.VerifySim(destinationPhoneNumber, ksOpen.VerifySimReq{
-        ActivationHours: 48,
-    })
-    fmt.Printf("Verify sim: changed=%d, active=%d, err=%v", sim.SimChanged, sim.IsActive, err)
-}
+	conf := ksOpen.Config{
+		ServerURL:    ksOpen.Gateway,
+		ServerMode:   ksOpen.ServerModeMock,
+		ClientID:     "your_client_id",
+		ClientSecret: "your_client_secret",
+	}
+	if err := conf.LoadEnv(); err != nil {
+		log.Fatal(err)
+	}
 
+	ctx := context.Background()
+
+	ksClient, err := ksOpen.NewV1Client(ctx, &conf)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Send SMS
+	sendResp, err := ksClient.SMS.Send(ctx, sms.SendReq{
+		From: "messagedesk",
+		To:   "380670000200",
+		Text: "Hello from Kyivstar API!",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("SMS sent: msgID=%s", sendResp.MsgID)
+
+	// Check SMS status
+	checkResp, err := ksClient.SMS.Check(ctx, sendResp.MsgID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("SMS status: %s (updated %v)", checkResp.Status, checkResp.Date)
+}
+```
+
+### 2. Standalone service — one product at a time
+
+Use `NewOauthClient` + product-specific `NewService` when you only need a single API product.
+
+```go
+package main
+
+import (
+	"context"
+	"log"
+
+	ksOpen "github.com/iamgoroot/kyivstar-opentelecom-go"
+	"github.com/iamgoroot/kyivstar-opentelecom-go/api/v1/sms"
+)
+
+func main() {
+	ctx := context.Background()
+
+	conf := ksOpen.Config{
+		ServerURL:    ksOpen.Gateway,
+		ServerMode:   ksOpen.ServerModeMock,
+		ClientID:     "your_client_id",
+		ClientSecret: "your_client_secret",
+	}
+	if err := conf.LoadEnv(); err != nil {
+		log.Fatal(err)
+	}
+
+	ksClient, err := ksOpen.NewOauthClient(ctx, &conf)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	svc := sms.NewService(ksClient)
+
+	resp, err := svc.Send(ctx, sms.SendReq{
+		From: "messagedesk",
+		To:   "380670000200",
+		Text: "Hello World!",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("SMS sent: reqID=%s msgID=%s", resp.ReqID, resp.MsgID)
+
+	check, err := svc.Check(ctx, resp.MsgID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("SMS status: %s", check.Status)
+}
+```
+
+## Available API products
+
+| Product | Package | Docs | Methods |
+|---------|---------|------|---------|
+| SMS (programmable) | `api/v1/sms` | [README](api/v1/sms/README.md) | `Send`, `SendBatch`, `Check`, `CheckBatch` |
+| RCS messaging | `api/v1/rcs` | [README](api/v1/rcs/README.md) | `SendText`, `SendSuggestion`, `SendRichCard`, `Check` |
+| Viber messaging | `api/v1/viber` | [README](api/v1/viber/README.md) | `SendTransaction`, `SendPromotionText`, `SendPromotionImage`, `SendPromotionAction`, `Check` |
+| Promo campaigns | `api/v1/promo` | [README](api/v1/promo/README.md) | `CreateSMS`, `CreateViber`, `CreateRCS`, `List`, `Get`, `AddAudience`, `AddImage`, `ChangeStatus`, `GetStatistics` |
+| Multichannel messaging | `api/v1/multichannel` | [README](api/v1/multichannel/README.md) | `Send`, `Check` |
+| SIM check protection | `api/v1/simcheck` | [README](api/v1/simcheck/README.md) | `Check(phone, period)` |
+| SIM count check | `api/v1/simcount` | [README](api/v1/simcount/README.md) | `Check(phone, days)` |
+| Financial scoring | `api/v1/scoring` | [README](api/v1/scoring/README.md) | `Check(phone, formula)` |
+| Lifetime check | `api/v1/lifetime` | [README](api/v1/lifetime/README.md) | `Check(phone)` |
+| Device check | `api/v1/devicecheck` | [README](api/v1/devicecheck/README.md) | `Check(phone, imei)`, `CheckWithImei(phone, days)` |
+| SMS OTP verification | `api/v1/otp` | [README](api/v1/otp/README.md) | `Send`, `Check` |
+| Flash call OTP | `api/v1/flashcall` | [README](api/v1/flashcall/README.md) | `Create`, `Check` |
+| Profile API | `api/v1/profile` | [README](api/v1/profile/README.md) | `Get(query)` |
+
+## Error handling
+
+The client returns Go errors for HTTP-level failures (network, auth, 4xx/5xx). Product-specific error codes like `1001003` (unsupported alpha name) are returned as fields in the response struct — they are not converted to Go errors, so you should check `errorCode` / `errorMsg` fields where applicable.
+
+Example:
+
+```go
+resp, err := svc.Send(ctx, req)
+if err != nil {
+    // network, auth, or 5xx error
+    log.Fatal(err)
+}
+// Some endpoints return partial errors in the response body
+if resp.ErrorCode != "" {
+    log.Printf("API error: %s — %s", resp.ErrorCode, resp.ErrorMsg)
+}
+```
+
+## Configuration
+
+| Constant | Value | Description |
+|----------|-------|-------------|
+| `ksOpen.Gateway` | `https://api-gateway.kyivstar.ua` | Base URL |
+| `ServerModeLive` | `""` | Production server |
+| `ServerModeMock` | `"mock"` | Mock server (fake data, free) |
+| `ServerModeSandbox` | `"sandbox"` | Sandbox (real data, limited) |
+
+All three server modes — `Mock`, `Sandbox`, and `Live` — are supported. The `Config.ServerMode` field is appended to the base URL:
+
+```
+https://api-gateway.kyivstar.ua/rest/v1/…           ← Live
+https://api-gateway.kyivstar.ua/mock/rest/v1/…      ← Mock
+https://api-gateway.kyivstar.ua/sandbox/rest/v1/…   ← Sandbox
+```
+
+## Loading configuration
+
+The `Config` struct provides two helper methods:
+
+### `LoadEnv()`
+
+Reads `KS_CLIENT_ID`, `KS_CLIENT_SECRET`, `KS_SERVER_URL`, and `KS_SERVER_MODE` from the environment. Only non-empty values override the current config:
+
+```go
+conf := ksOpen.Config{
+    ServerURL:  ksOpen.Gateway,
+    ClientID:   "your_client_id",
+    ClientSecret: "your_client_secret",
+}
+if err := conf.LoadEnv(); err != nil {
+    log.Fatal(err)
+}
+```
+
+### `LoadJSON(r io.Reader)`
+
+Decodes JSON into the config. JSON keys match the struct tag names (`serverUrl`, `clientId`, `clientSecret`, `serverMode`):
+
+```go
+f, _ := os.Open("config.json")
+conf.LoadJSON(f)
 ```
 
 ## Documentation
 
-For more detailed information on how to use the client, please refer to the [official documentation](https://api-gateway.kyivstar.ua).
+- [Official API documentation](https://api-gateway.kyivstar.ua)
+- [OpenAPI specification](https://api-gateway.kyivstar.ua/api/public/openapi.yaml)
+
+## Examples
+
+Standalone runnable examples for every product are in the `examples/` directory:
+
+```bash
+# Run the V1Client example (all products bundled)
+go run -C examples/all .
+
+# Run a standalone product example
+go run -C examples/sms .
+go run -C examples/scoring .
+go run -C examples/otp .
+```
 
 ## Contributing
 
-Contributions are welcome! If you find a bug or have a feature request, please open an issue or submit a pull request.
+Contributions are welcome! See [CLAUDE.md](./CLAUDE.md) for the contributor guide, coding conventions, and instructions on adding new API products.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
-
-## Contact
-
-If you have any questions or need assistance, please open an issue on this repository or contact the maintainers directly.
-
+MIT — see [LICENSE](./LICENSE).
